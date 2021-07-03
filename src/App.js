@@ -1,6 +1,5 @@
 /** @format */
 import React, { useState } from 'react';
-// import Main from './components/Main';
 import Admin from './components/Admin';
 import './App.css';
 import Swap from './components/SwapPartner/Swap';
@@ -20,6 +19,7 @@ function App() {
 		else if (entry === p1 || entry === p2 || entry === p3 || entry === p4) setPassword('Swap');
 		else setIncorrect(true);
 	};
+
 	return (
 		<>
 			{(() => {
@@ -62,7 +62,6 @@ function App() {
 						</div>
 					);
 
-				// if ( password === "Swap") return <Main API_URL={API_URL}/>;
 				if (password === 'Admin') return <Admin API_URL={API_URL} />;
 				if (password === 'Swap') return <Swap API_URL={API_URL} />;
 			})()}
