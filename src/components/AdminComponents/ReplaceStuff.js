@@ -129,9 +129,10 @@ const ReplaceStuff = ({API_URL}) => {
                 return alert("Vehicle Not Vacant");
             if(item.status === "Under Maintenace")
                 return alert("Vehicle Under Maintenance");
-                changeInVehicle();
-                changeVehicleInRider();
-            })
+            changeInVehicle();
+            changeVehicleInRider();
+            return alert("Vehicle Replacement Successful")
+        })
     }
     const replaceBattery = () => {
         fetch(`${API_URL}/items/bat/${batteryId}`)
@@ -143,9 +144,10 @@ const ReplaceStuff = ({API_URL}) => {
                 return alert("Battery Not Vacant");
             if(item.status === "Under Maintenace")
                 return alert("Battery Under Maintenance");
-                changeInBattery();
-                changeBatteryInRider();
-            })
+            changeInBattery();
+            changeBatteryInRider();
+            return alert("Battery Replacement Successful")
+        })
     }
 
     const report = (productType, componentId) => {

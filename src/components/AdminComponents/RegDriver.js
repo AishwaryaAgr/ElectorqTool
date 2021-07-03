@@ -103,6 +103,8 @@ const RegDriver = ({ API_URL }) => {
 		addBattery();
 		document.querySelector('#sId').value = "0";
 		setRider(absent);
+		setentryRider(absent);
+		entryFlag(true);
 		
 	};
 

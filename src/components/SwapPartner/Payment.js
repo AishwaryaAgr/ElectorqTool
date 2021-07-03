@@ -20,7 +20,7 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 		fetch(url, {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
-		}).then(() => console.log('updated battery'));
+		}).then(() => setRider(absent));
 	};
 
 	const addTransaction = () => {

@@ -60,7 +60,6 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 			.then((item) => {
 				let sett = { ...item, soc: charge, newstate: station };
 				setCurrent(sett);
-				setRider(absent);
 				document.querySelector('#sId').value = '0';
 				document.querySelector('#charge').value = '';
 				document.querySelector('#station').value = '';

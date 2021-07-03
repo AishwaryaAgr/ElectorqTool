@@ -15,13 +15,13 @@ const Admin = ({ API_URL }) => {
 			<nav className='navbar navbar-expand-lg navbar-fixed  p-2'>
 				<div className=' h4 navbar-brand mt-4 mx-3'>Electorq</div>
 				<div className='navbar-nav flex flex-row'>
-					<button className='mx-2 nav-item active bg-warning btn' onClick={() => setTask('Rider')}>
+					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Rider')}>
 						Assign Rider
 					</button>
-					<button className='mx-2 nav-item active bg-warning btn' onClick={() => setTask('Add')}>Add Rider</button>
-					<button className='mx-2 nav-item active bg-warning btn' onClick={() => setTask('Replace')}>Replace Vehicle/Battery</button> 
-					<button className='mx-2 nav-item active bg-warning btn' onClick={() => setTask('Remove')}>Remove Rider</button>
-					<button className='mx-2 nav-item active bg-warning btn' onClick={() => setTask('Rent')}>
+					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Add')}>Add Rider</button>
+					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Replace')}>Replace Vehicle/Battery</button> 
+					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Remove')}>Remove Rider</button>
+					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Rent')}>
 						Take Rent
 					</button>
 				</div>
