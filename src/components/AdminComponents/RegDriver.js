@@ -249,7 +249,7 @@ const RegDriver = ({ API_URL }) => {
 										Current Rider Name :  <span>{rider.name}</span> <br/>
 										Current Rider Contact:  <span>{rider.number}</span> <br/>
 										Current Battery Security:  <span>{rider.batterySecurity}</span> <br/>
-										Current scooterSecurity:  <span>{rider.scooterSecurity}</span> <br/>
+										Current Scooter Security:  <span>{rider.scooterSecurity}</span> <br/>
 									</div>
 									<div className='col-12'>
 										<input className='form-control' id='vehicleSec' placeholder='Vehicle Security Returned' onChange={e=> setVehSec(e.target.value)}/>

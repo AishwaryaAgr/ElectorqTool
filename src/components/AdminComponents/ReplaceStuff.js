@@ -100,7 +100,7 @@ const ReplaceStuff = ({API_URL}) => {
 
         fetch(`${API_URL}/items/replace`, {
 			method: 'PUT',
-			body: JSON.stringify({ id: battery.batteryId }),
+			body: JSON.stringify({ id: battery.batteryId, soc:oldSoc }),
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => console.log('Changed in Battery'));
     }
@@ -120,17 +120,17 @@ const ReplaceStuff = ({API_URL}) => {
     }
 
     const changeBatteryInRider = () => {
-        const cost = rider.pendingSwapPayment + (battery.batteryCharge - oldSoc)*0.8;
+        const cost = (rider.pendingSwapPayment + battery.batteryCharge - oldSoc);
         fetch(`${API_URL}/riders/replacebattery`, {
 			method: 'PUT',
-			body: JSON.stringify({number, batteryId, cost }),
+			body: JSON.stringify({number, batteryId: rider.batteryId, cost }),
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => console.log('Changed in Rider Battery'));
     }
     const changeVehicleInRider = () =>{
         fetch(`${API_URL}/riders/replacevehicle`, {
 			method: 'PUT',
-			body: JSON.stringify({number, scooterId: vehicleId}),
+			body: JSON.stringify({number, scooterId: rider.scooterId}),
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => console.log('Changed in Rider Vehicle'));
     }
@@ -184,15 +184,15 @@ const ReplaceStuff = ({API_URL}) => {
 
     const replace = () => {
         datefun();
-        if(vehicleId !== "" && vehicleId !== "-1"){
+        if(vehicleId !== "" && vehicleId !== "-1" && rider.scooterId !== "Not Assigned"){
             replaceVehicle();
-            report("scooter", vehicleId);
+            report("scooter", rider.scooterId);
         }
-        if(!(batteryId === "" || soc === "" || battery === absent)  && batteryId !== "-1" && oldSoc !== ""){
+        if(!(batteryId === "" || soc === "" || battery === absent)  && batteryId !== "-1" && oldSoc !== "" && rider.batteryId !== "Not Assigned"){
             if(!checkSoc(soc) || !checkSoc(oldSoc)) return alert("Charge Must be between 0 and 50")
 		
             replaceBattery();
-            report("battery", batteryId)
+            report("battery", rider.batteryId)
         }
     }
     const confirm = (cb) => {
