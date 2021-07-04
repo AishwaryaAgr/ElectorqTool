@@ -40,7 +40,7 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 			method: 'PUT',
 			body: JSON.stringify({ id: bId, user: rider.number, station, charge }),
 			headers: { 'Content-Type': 'application/json' },
-		}).then(() => console.log('Battery Updated'));
+		}).then(() => alert('Battery Updated'));
 	};
 
 	const giveBattery = async () => {

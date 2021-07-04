@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
-import "../../App.css"
-const TakeRent = ({ API_URL, setTask }) => {
+/** @format */
 
+import React, { useState } from 'react';
+import '../../App.css';
+const TakeRent = ({ API_URL, setTask }) => {
 	const [method, setMethod] = useState('Cash');
 	const [Id, setId] = useState('');
-	const [first, setFirst] = useState("")
-	const [days, setDays] = useState("")
+	const [first, setFirst] = useState('');
+	const [days, setDays] = useState('');
 
 	const addRent = async (vehicle, transactionId, amount) => {
 		const rent = {
@@ -13,96 +14,90 @@ const TakeRent = ({ API_URL, setTask }) => {
 			name: vehicle.currentUserName,
 			number: vehicle.currentUserNumber,
 			amount,
-			mode: transactionId
-		}
+			mode: transactionId,
+		};
 		await fetch(`${API_URL}/rents`, {
 			method: 'POST',
 			body: JSON.stringify(rent),
-			headers: { 'Content-Type': 'application/json' }
-		}).then(() => alert("Rent Paid"))
+			headers: { 'Content-Type': 'application/json' },
+		}).then(() => alert('Rent Paid'));
 
-		fetch(`${API_URL}/vehicles/rent`,{
+		fetch(`${API_URL}/riders/rent`, {
 			method: 'PUT',
-			body: JSON.stringify({id: vehicle.scooterId}),
-			headers: { 'Content-Type': 'application/json' }
+			body: JSON.stringify({ id: vehicle.scooterId }),
+			headers: { 'Content-Type': 'application/json' },
 		}).then(() => {
-			setDays("");
-			setFirst("");
-			setId("");
-			setMethod("Cash");
-		})
-
-
-	}
+			setDays('');
+			setFirst('');
+			setId('');
+			setMethod('Cash');
+		});
+	};
 
 	const getVehicle = async (scooter, transactionId, amount) => {
 		fetch(`${API_URL}/vehicles/${scooter}`)
 			.then((item) => item.json())
 			.then((vehicle) => {
 				if (vehicle == null) {
-					return alert("Check Scooter Id")
+					return alert('Check Scooter Id');
 				}
 				addRent(vehicle, transactionId, amount);
-			})
-	}
+			});
+	};
 
 	const takeRent = async () => {
-		const scooter = document.querySelector("#sId").value;
-		const amount = document.querySelector("#amount").value;
+		const scooter = document.querySelector('#sId').value;
+		const amount = document.querySelector('#amount').value;
 		let transactionId = 'Cash';
 		if (method === 'online') {
 			transactionId = Id;
 		}
 		await getVehicle(scooter, transactionId, amount);
 
-		document.querySelector("#sId").value = "0";
-		document.querySelector("#amount").value = "";
-	}
+		document.querySelector('#sId').value = '0';
+		document.querySelector('#amount').value = '';
+	};
 
-	const totalDays = start =>{
-		let mon=[0,31,59,90,120,151,181,212,243,273,304,334];
+	const totalDays = (start) => {
+		let mon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
 
-		let dayss =  (start.getFullYear()-2021)*365 + mon[Number(start.getMonth())] + (start.getDate())
-		let minutess =  dayss*60*24 + start.getHours()*60 + start.getMinutes();
+		let dayss = (start.getFullYear() - 2021) * 365 + mon[Number(start.getMonth())] + start.getDate();
+		let minutess = dayss * 60 * 24 + start.getHours() * 60 + start.getMinutes();
 		return dayss;
-	}
+	};
 
 	const riderName = (id) => {
 		// console.log(id);
 		fetch(`${API_URL}/riders/scooter/${id}`)
-		.then((vehicle)=>vehicle.json())
-		.then(vehicle=>{
-			if(vehicle === null || vehicle.scooterId === "Not Assigned")
-			{
-				setFirst("");
-				setDays("")
-				return alert("Scooter Not Assigned");
-			}
-			else{
-				let start =new Date(vehicle.dateAlloted);
-				let mid = new Date(vehicle.latestRent);
-				let end = new Date();
-				
-				let sday = totalDays(start)
-				let mday = totalDays(mid)
-				let eday = totalDays(end);
+			.then((vehicle) => vehicle.json())
+			.then((vehicle) => {
+				if (vehicle === null || vehicle.scooterId === 'Not Assigned') {
+					setFirst('');
+					setDays('');
+					return alert('Scooter Not Assigned');
+				} else {
+					let start = new Date(vehicle.dateAlloted);
+					let mid = new Date(vehicle.latestRent);
+					let end = new Date();
 
-				if(sday === mday){
-					setFirst(" {First Transaction}")
+					let sday = totalDays(start);
+					let mday = totalDays(mid);
+					let eday = totalDays(end);
+
+					if (sday === mday) {
+						setFirst(' {First Transaction}');
+					} else {
+						setFirst('');
+					}
+					setDays(eday - mday);
 				}
-				else{
-					setFirst("")
-				}
-				setDays(eday-mday);
-			}
-		})
-	}
+			});
+	};
 
 	const confirm = (cb) => {
-    const confirmBox = window.confirm( "Do you want to continue" )
-    if (confirmBox === true) 
-      cb();
-    }
+		const confirmBox = window.confirm('Do you want to continue');
+		if (confirmBox === true) cb();
+	};
 
 	return (
 		<>
@@ -111,11 +106,16 @@ const TakeRent = ({ API_URL, setTask }) => {
 					<div>
 						<div className='py-2 px-3'>
 							<div className='second pl-2 d-flex py-2'>
-								<div className='border-left pl-2  mx-3' >
+								<div className='border-left pl-2  mx-3'>
 									<span className='head'>Scooter Number</span>
 									<div className='d-flex'>
-										<select className='form-select' id='sId' onChange={(e) => riderName(e.target.value)}>
-											<option defaultValue value="0">Scooter Number</option>
+										<select
+											className='form-select'
+											id='sId'
+											onChange={(e) => riderName(e.target.value)}>
+											<option defaultValue value='0'>
+												Scooter Number
+											</option>
 											<option value='1'>One</option>
 											<option value='2'>Two</option>
 											<option value='3'>Three</option>
@@ -149,7 +149,7 @@ const TakeRent = ({ API_URL, setTask }) => {
 						</div>
 						<div className='py-2 px-3'>
 							<div className='second pl-2 d-flex py-2'>
-								<div className='border-left pl-2  mx-3' >
+								<div className='border-left pl-2  mx-3'>
 									<span className='head'>Amount {first}</span>
 									<div className='d-flex'>
 										<span className='dollar'>₹</span>
@@ -157,8 +157,8 @@ const TakeRent = ({ API_URL, setTask }) => {
 											type='text'
 											name='text'
 											className='form-control ml-1'
-											placeholder="Enter Amount"
-											id="amount"
+											placeholder='Enter Amount'
+											id='amount'
 										/>
 									</div>
 								</div>
@@ -207,8 +207,8 @@ const TakeRent = ({ API_URL, setTask }) => {
 											name='text'
 											className='form-control ml-1'
 											placeholder='Transaction Id'
-											onChange={e=>setId(e.target.value)}
-											value= {Id}
+											onChange={(e) => setId(e.target.value)}
+											value={Id}
 										/>
 									</div>
 								</div>
@@ -216,7 +216,7 @@ const TakeRent = ({ API_URL, setTask }) => {
 						</div>
 						<div className='d-flex justify-content-between px-3 pt-4 pb-3'>
 							<div>
-								<span className='back' type='button' onClick={() => setTask("Rider")}>
+								<span className='back' type='button' onClick={() => setTask('Rider')}>
 									Cancel
 								</span>
 							</div>{' '}
@@ -228,7 +228,7 @@ const TakeRent = ({ API_URL, setTask }) => {
 				</div>
 			</div>
 		</>
-	)
-}
+	);
+};
 
-export default TakeRent
+export default TakeRent;
