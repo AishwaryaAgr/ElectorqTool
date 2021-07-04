@@ -36,7 +36,7 @@ const AddRider = ({API_URL}) => {
                         <div className='input-group-text'>+91</div>
                         <input className='form-control' id='number' placeholder='Contact Number' value={number} onChange={(e)=>setNumber(e.target.value)}/>
                     </div>
-                    <link rel="stylesheet" href="https://docs.google.com/forms/d/e/1FAIpQLSehtsVQ8vB-8PfEJknQ6JPyhfSpHu66CL1s5CrrX8SUc9xjkg/viewform?usp=sf_link" />
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSehtsVQ8vB-8PfEJknQ6JPyhfSpHu66CL1s5CrrX8SUc9xjkg/viewform?usp=sf_link">Add Documents</a>
                 </div>
                 <button type='button' className='btn btn-primary' onClick={() => confirm(addRider)}>
                     Register
