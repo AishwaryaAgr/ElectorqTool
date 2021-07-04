@@ -6,6 +6,7 @@ import './Payment.css';
 const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }) => {
 	const [method, setMethod] = useState('Cash');
 	const [Id, setId] = useState('');
+	const [amount, setAmount] = useState((Number(current.batteryCharge) - Number(current.soc))*0.8 + Number(rider.pendingSwapPayment))
 
 	const updateRider = () => {
 		fetch(`${API_URL}/riders/removeBattery`, {
@@ -38,6 +39,8 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 			mode: transactionId,
 			station: current.newstate,
 			stationPrev: current.station,
+			socFrom: current.batteryCharge,
+			socTo: current.soc
 		};
 
 		fetch(`${API_URL}/swaps`, {
@@ -100,9 +103,7 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 									<div>
 										<span className='dollar'>₹</span>
 										<span className='amount'>
-											{Number(current.batteryCharge) -
-												Number(current.soc) +
-												Number(rider.pendingSwapPayment)}
+											{amount}
 										</span>
 									</div>
 								</div>

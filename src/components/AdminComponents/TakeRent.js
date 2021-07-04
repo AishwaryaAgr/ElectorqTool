@@ -69,10 +69,10 @@ const TakeRent = ({ API_URL, setTask }) => {
 
 	const riderName = (id) => {
 		// console.log(id);
-		fetch(`${API_URL}/vehicles/${id}`)
+		fetch(`${API_URL}/riders/scooter/${id}`)
 		.then((vehicle)=>vehicle.json())
 		.then(vehicle=>{
-			if(vehicle === null || vehicle.currentUserName === "Not Assigned")
+			if(vehicle === null || vehicle.scooterId === "Not Assigned")
 			{
 				setFirst("");
 				setDays("")

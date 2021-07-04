@@ -20,6 +20,13 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 				console.log(vehicle);
 			});
 	};
+
+	const checkSoc = charge => {
+		if(Number(charge)<0 || Number(charge)>50)
+			return false;
+		return true;
+	}
+
 	const riderUpdate = async (bId) => {
 		fetch(`${API_URL}/riders/swap`, {
 			method: 'PUT',
@@ -42,7 +49,7 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 		const bId = document.querySelector('#bId').value;
 		const charge = document.querySelector('#charge').value;
 		const station = document.querySelector('#station').value;
-
+		if(!checkSoc(charge)) return alert("Charge Must be between 0 and 50");
 		await riderUpdate(bId);
 		batteryUpdate(bId, charge, station);
 		setRider(absent);
@@ -54,6 +61,7 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 
 	const getBattery = () => {
 		const charge = document.querySelector('#charge').value;
+		if(!checkSoc(charge)) return alert("Charge Must be between 0 and 50")
 		const station = document.querySelector('#station').value;
 		fetch(`${API_URL}/items/${rider.number}`)
 			.then((vehicle) => vehicle.json())
@@ -68,6 +76,7 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 	};
 
 	const takeBattery = async () => {
+		
 		if (rider === absent) return alert('Scooter Not Assigned');
 		if (rider.batteryId === 'Not Assigned') return alert('Battery Not Assigned');
 		getBattery();

@@ -25,12 +25,17 @@ const RegDriver = ({ API_URL }) => {
 	const [entrystation, setentrystation] = useState()
 
 	useEffect(() => {
-		fetch(`${API_URL}/riders`)
+		fetch(`${API_URL}/items`)
 			.then((item) => item.json())
 			.then((items) => setAllRiders(items));
 		console.log("object")
 	}, [API_URL, rider]);
 	
+	const checkSoc = charge => {
+		if(Number(charge)<0 || Number(charge)>50)
+			return false;
+		return true;
+	}
 	const removeRider = async () => {
 		fetch(`${API_URL}/riders/remove`, {
 			method: 'PUT',
@@ -98,6 +103,7 @@ const RegDriver = ({ API_URL }) => {
 		if (scooter === '0') {
 			return alert('Pick a scooter');
 		}
+		if(!checkSoc(entrysoc)) return alert("Charge Must be between 0 and 50")
 		await assignVehicle(entryRider.name, entryRider.number,scooter);
 		addRider(scooter);
 		addBattery();
@@ -204,7 +210,21 @@ const RegDriver = ({ API_URL }) => {
 									Rider Contact:  <span>{entryRider.number}</span>
 								</div>
 								<div className='col-12'>
-									<input className='form-control' placeholder='Battery Id' onChange={e=> setentrybatId(e.target.value)}/>
+									<select className='form-select' id='bId' onChange={e=> setentrybatId(e.target.value)}>
+										<option defaultValue value='-1'>
+											Battery Number
+										</option>
+										{allRiders.map((battery, index) => {
+											if (battery.status === 'Not Assigned')
+												return (
+													<option value={battery.batteryId} key={index}>
+														{' '}
+														{battery.batteryId}
+													</option>
+												);
+											return <option key={index} style={{ display: 'none' }}></option>;
+										})}
+									</select>
 								</div>
 								<div className='col-12'>
 									<input className='form-control' placeholder='Vehicle Security Amount' onChange={e=> setentryvehSecurity(e.target.value)}/>
@@ -227,7 +247,9 @@ const RegDriver = ({ API_URL }) => {
 								<>
 									<div className='col-12'>
 										Current Rider Name :  <span>{rider.name}</span> <br/>
-										Current Rider Contact:  <span>{rider.number}</span>
+										Current Rider Contact:  <span>{rider.number}</span> <br/>
+										Current Battery Security:  <span>{rider.batterySecurity}</span> <br/>
+										Current scooterSecurity:  <span>{rider.scooterSecurity}</span> <br/>
 									</div>
 									<div className='col-12'>
 										<input className='form-control' id='vehicleSec' placeholder='Vehicle Security Returned' onChange={e=> setVehSec(e.target.value)}/>

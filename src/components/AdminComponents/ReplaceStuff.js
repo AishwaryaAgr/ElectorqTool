@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
 const ReplaceStuff = ({API_URL}) => {
 
@@ -8,12 +8,14 @@ const ReplaceStuff = ({API_URL}) => {
 		batteryId: "Not Assigned",
         scooterId: "Not Assigned"
 	}
-
+    const [allBatteries, setAllBatteries] = useState([])
+    const [allVehicles, setAllVehicles] = useState([])
     const [number, setNumber] = useState()
     const [rider, setRider] = useState(absent);
     const [vehicleId, setVehicleId] = useState("")
     const [batteryId, setBatteryId] = useState("")
     const [soc, setSoc] = useState("")
+    const [oldSoc, setOldSoc] = useState("")
     const [station, setStation] = useState("")
     const [time, setTime] = useState("")
     const [date, setDate] = useState("")
@@ -21,8 +23,23 @@ const ReplaceStuff = ({API_URL}) => {
     const [desc, setDesc] = useState("");
     const [battery, setBattery] = useState(absent);
     
+    useEffect(() => {
+        fetch(`${API_URL}/items`)
+			.then((item) => item.json())
+			.then((items) => setAllBatteries(items));
+		console.log("object");
 
+        fetch(`${API_URL}/vehicles`)
+			.then((item) => item.json())
+			.then((items) => setAllVehicles(items));
+		console.log("object")
+    }, [API_URL])
 
+    const checkSoc = charge => {
+		if(Number(charge)<0 || Number(charge)>50)
+			return false;
+		return true;
+	}
 
     const getBattery = (number) => {
         fetch(`${API_URL}/items/${number}`)
@@ -103,7 +120,7 @@ const ReplaceStuff = ({API_URL}) => {
     }
 
     const changeBatteryInRider = () => {
-        const cost = rider.pendingSwapPayment + battery.batteryCharge - soc;
+        const cost = rider.pendingSwapPayment + (battery.batteryCharge - oldSoc)*0.8;
         fetch(`${API_URL}/riders/replacebattery`, {
 			method: 'PUT',
 			body: JSON.stringify({number, batteryId, cost }),
@@ -167,11 +184,13 @@ const ReplaceStuff = ({API_URL}) => {
 
     const replace = () => {
         datefun();
-        if(vehicleId !== ""){
+        if(vehicleId !== "" && vehicleId !== "-1"){
             replaceVehicle();
             report("scooter", vehicleId);
         }
-        if(!(batteryId === "" || soc === "" || battery === absent)){
+        if(!(batteryId === "" || soc === "" || battery === absent)  && batteryId !== "-1" && oldSoc !== ""){
+            if(!checkSoc(soc) || !checkSoc(oldSoc)) return alert("Charge Must be between 0 and 50")
+		
             replaceBattery();
             report("battery", batteryId)
         }
@@ -209,14 +228,43 @@ const ReplaceStuff = ({API_URL}) => {
                         </div>
                     </div>
                     <div className="col-12" id="vehicle">
-                        <input className='form-control' id='number' placeholder='Vehicle Id' onChange={(e)=>setVehicleId(e.target.value)}/>
+                        <select className='form-select' id='bId' onChange={e=> setVehicleId(e.target.value)}>
+                            <option defaultValue value='-1'>
+                                Scooter Number
+                            </option>
+                            {allVehicles.map((battery, index) => {
+                                if (battery.status === 'Not Assigned')
+                                    return (
+                                        <option value={battery.scooterId} key={index}>
+                                            {' '}
+                                            {battery.scooterId}
+                                        </option>
+                                    );
+                                return <option key={index} style={{ display: 'none' }}></option>;
+                            })}
+                        </select>
                     </div>
                     <div className="col-12" id="vehicle">
-                        <input className='form-control' id='number' placeholder='Battery Id' onChange={(e)=>setBatteryId(e.target.value)}/>
-                        <input className='form-control' id='number' placeholder='Soc' onChange={(e)=>setSoc(e.target.value)}/>
+                        <select className='form-select' id='bId' onChange={e=> setBatteryId(e.target.value)}>
+                            <option defaultValue value='-1'>
+                                Battery Number
+                            </option>
+                            {allBatteries.map((battery, index) => {
+                                if (battery.status === 'Not Assigned')
+                                    return (
+                                        <option value={battery.batteryId} key={index}>
+                                            {' '}
+                                            {battery.batteryId}
+                                        </option>
+                                    );
+                                return <option key={index} style={{ display: 'none' }}></option>;
+                            })}
+                        </select>
+                        <input className='form-control' id='number' placeholder='New Battery SoC' onChange={(e)=>setSoc(e.target.value)}/>
                         <input className='form-control' id='number' placeholder='Station' onChange={(e)=>setStation(e.target.value)}/>
                     </div>
                     <div className="col-12" id="vehicle">
+                        <input className='form-control' id='number' placeholder='Old Battery SoC' onChange={(e)=>setOldSoc(e.target.value)}/>
                         <input type="date" className='form-control' id='number' placeholder='Date when reported' onChange={(e)=>setDate(e.target.value)}/>
                         <input type="time" className='form-control' id='number' placeholder='Time when reported' onChange={(e)=>setTime(e.target.value)}/>
                         <input type="textarea" className='form-control' id='number' placeholder='Description' onChange={(e)=>setDesc(e.target.value)}/>

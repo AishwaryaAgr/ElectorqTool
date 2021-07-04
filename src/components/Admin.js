@@ -7,6 +7,7 @@ import TakeRent from './AdminComponents/TakeRent';
 import AddRider from './AdminComponents/AddRider';
 import RemoveRider from './AdminComponents/RemoveRider';
 import ReplaceStuff from './AdminComponents/ReplaceStuff';
+import Repair from './AdminComponents/Repair';
 
 const Admin = ({ API_URL }) => {
 	const [task, setTask] = useState('Rider');
@@ -21,6 +22,7 @@ const Admin = ({ API_URL }) => {
 					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Add')}>Add Rider</button>
 					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Replace')}>Replace Vehicle/Battery</button> 
 					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Remove')}>Remove Rider</button>
+					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Repair')}>Repaired Component</button>
 					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Rent')}>
 						Take Rent
 					</button>
@@ -38,6 +40,9 @@ const Admin = ({ API_URL }) => {
 				}
 				else if(task === "Remove"){
 				    return <RemoveRider API_URL={API_URL}/>
+				}
+				else if(task === "Repair"){
+				    return <Repair API_URL={API_URL}/>
 				}
 				else return <TakeRent API_URL={API_URL} setTask={setTask} />;
 			})()}
