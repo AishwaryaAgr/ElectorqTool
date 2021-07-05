@@ -118,7 +118,7 @@ const ReplaceStuff = ({ API_URL }) => {
 		}).then(() => console.log('Changed in Rider Vehicle'));
 	};
 
-	const replaceVehicle = () => {
+	const replaceVehicle = (nTime) => {
 		fetch(`${API_URL}/vehicles/${vehicleId}`)
 			.then((item) => item.json())
 			.then((item) => {
@@ -128,10 +128,11 @@ const ReplaceStuff = ({ API_URL }) => {
 				if (item.status === 'Under Maintenace') return alert('Vehicle Under Maintenance');
 				changeInVehicle();
 				changeVehicleInRider();
+				report('scooter', rider.scooterId, nTime);
 				return alert('Vehicle Replacement Successful');
 			});
 	};
-	const replaceBattery = () => {
+	const replaceBattery = (nTime) => {
 		fetch(`${API_URL}/items/bat/${batteryId}`)
 			.then((item) => item.json())
 			.then((item) => {
@@ -140,6 +141,7 @@ const ReplaceStuff = ({ API_URL }) => {
 				if (item.status === 'Under Maintenace') return alert('Battery Under Maintenance');
 				changeInBattery();
 				changeBatteryInRider();
+				report('battery', rider.batteryId, nTime);
 				return alert('Battery Replacement Successful');
 			});
 	};
@@ -174,8 +176,8 @@ const ReplaceStuff = ({ API_URL }) => {
 		}
 		let nTime = new Date(y, m, d, hour, min);
 		if (vehicleId !== '' && vehicleId !== '-1' && rider.scooterId !== 'Not Assigned') {
-			replaceVehicle();
-			report('scooter', rider.scooterId, nTime);
+			replaceVehicle(nTime);
+			
 		}
 		if (
 			!(batteryId === '' || soc === '' || battery === absent) &&
@@ -186,8 +188,8 @@ const ReplaceStuff = ({ API_URL }) => {
 			if (!checkSoc(soc) || !checkSoc(oldSoc)) return alert('Charge Must be between 0 and 50');
 			if(Number(oldSoc)> Number(battery.batteryCharge)) return alert("Old Battery Charge in valid!") 
 
-			replaceBattery();
-			report('battery', rider.batteryId, nTime);
+			replaceBattery(nTime);
+			
 		}
 		else{
 			return alert("Rider does not have a battery/vehicle")
