@@ -73,7 +73,7 @@ const Repair = ({API_URL}) => {
         fetch(`${API_URL}/${val}/${id}`)
             .then(item=> item.json())
             .then(item =>{
-                if(item === null)
+                if(item.status === "Under Maintenance")
                     return cb(id);
                 return alert("Item already repaired")
             })
