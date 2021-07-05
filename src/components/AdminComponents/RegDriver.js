@@ -21,7 +21,7 @@ const RegDriver = ({ API_URL }) => {
 	const [entrybatId, setentrybatId] = useState("-1")
 	const [entryvehSecurity, setentryvehSecurity] = useState("")
 	const [entrybatSecurity, setentrybatSecurity] = useState("")
-	const [entrysoc, setentrysoc] = useState(1)
+	const [entrysoc, setentrysoc] = useState("")
 	const [entrystation, setentrystation] = useState("Station 1")
 
 	useEffect(() => {
@@ -100,7 +100,7 @@ const RegDriver = ({ API_URL }) => {
 	const register = async () => {
 		const scooter = document.querySelector('#sId').value;
 
-		if (scooter === '0' || entrybatId === "-1" || entryvehSecurity === "" || entrybatSecurity === "") {
+		if (scooter === '0' || entrybatId === "-1" || entryvehSecurity === "" || entrybatSecurity === "" || entrysoc === "") {
 			return alert('Fill all the fields');
 		}
 		if(entryRider.scooterId !== "Not Assigned" ||  entryRider.batteryId !== "Not Assigned")
@@ -229,13 +229,13 @@ const RegDriver = ({ API_URL }) => {
 									</select>
 								</div>
 								<div className='col-12'>
-									<input className='form-control' placeholder='Vehicle Security Amount' onChange={e=> setentryvehSecurity(e.target.value)}/>
+									<input className='form-control' type="number" placeholder='Vehicle Security Amount' onChange={e=> setentryvehSecurity(e.target.value)}/>
 								</div>
 								<div className='col-12'>
-									<input className='form-control' placeholder='Battery Security Amount' onChange={e=> setentrybatSecurity(e.target.value)}/>
+									<input className='form-control' type="number" placeholder='Battery Security Amount' onChange={e=> setentrybatSecurity(e.target.value)}/>
 								</div>
 								<div className='col-12'>
-									<input className='form-control' placeholder='State of Charge' onChange={e=> setentrysoc(e.target.value)}/>
+									<input className='form-control' type="number" placeholder='State of Charge' onChange={e=> setentrysoc(e.target.value)}/>
 								</div>
 								<div className='col-12'>
 									<select className='form-select' onChange={e=> setentrystation(e.target.value)}>
