@@ -56,7 +56,7 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 		document.querySelector('#sId').value = '0';
 		document.querySelector('#bId').value = '-1';
 		document.querySelector('#charge').value = '';
-		document.querySelector('#station').value = '';
+		document.querySelector('#station').value = 'Station 1';
 	};
 
 	const getBattery = () => {
@@ -72,7 +72,7 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 				setCurrent(sett);
 				document.querySelector('#sId').value = '0';
 				document.querySelector('#charge').value = '';
-				document.querySelector('#station').value = '';
+				document.querySelector('#station').value = 'Station 1';
 				return setTask(true);
 			});
 	};
