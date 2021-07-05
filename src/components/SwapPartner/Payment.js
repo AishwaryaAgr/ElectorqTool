@@ -126,7 +126,7 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 									<div className='d-flex'>
 										<span className='dollar'>₹</span>
 										<input
-											type='text'
+											type='number'
 											name='text'
 											onChange={(e) => setId(e.target.value)}
 											className='form-control ml-1'

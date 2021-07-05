@@ -178,7 +178,7 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 						</label>
 						<div className='input-group'>
 							<div className='input-group-text'>%</div>
-							<input type='text' className='form-control' id='charge' placeholder='State of Charge' />
+							<input type='number' className='form-control' id='charge' placeholder='State of Charge' />
 						</div>
 					</div>
 
