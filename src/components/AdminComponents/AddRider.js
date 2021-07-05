@@ -2,17 +2,35 @@ import React , {useState} from 'react'
 
 const AddRider = ({API_URL}) => {
     const [name, setName] = useState("")
-    const [number, setNumber] = useState(0)
+    const [number, setNumber] = useState("")
+
+    const checkNumber= () =>{
+        if(number.length !== 10 || Number(number[0])<6)
+            return true;
+        return false;
+    }
 
     const addRider = () => {
-        if(number.length !== 10 || Number(number[0])<6)
-            return alert("Invalid Contact Number");
 		fetch(`${API_URL}/riders`, {
 			method: 'POST',
 			body: JSON.stringify({name, number}),
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => {alert('Rider Created'); setNumber(""); return setName("");});
 	}
+    const getRider = () => {
+        if(checkNumber())
+            return alert("Test Number Entered");
+
+        fetch(`${API_URL}/riders/one/${number}`)
+        .then(item=> item.json())
+        .then((item) => {
+            if(item===null)
+                addRider();
+            else    
+                alert('Number Occupied'); 
+            setNumber(""); 
+            return setName("");});
+    }
     const confirm = (cb) => {
     const confirmBox = window.confirm( "Do you want to continue" )
     if (confirmBox === true) 
@@ -34,11 +52,11 @@ const AddRider = ({API_URL}) => {
                     </div>
                     <div className='col-12 input-group'>
                         <div className='input-group-text'>+91</div>
-                        <input className='form-control' id='number' placeholder='Contact Number' value={number} onChange={(e)=>setNumber(e.target.value)}/>
+                        <input className='form-control' id='number' type='number' placeholder='Contact Number' value={number} onChange={(e)=>setNumber(e.target.value)}/>
                     </div>
                     <a href="https://docs.google.com/forms/d/e/1FAIpQLSehtsVQ8vB-8PfEJknQ6JPyhfSpHu66CL1s5CrrX8SUc9xjkg/viewform?usp=sf_link" target="_blank">Add Documents</a>
                 </div>
-                <button type='button' className='btn btn-primary' onClick={() => confirm(addRider)}>
+                <button type='button' className='btn btn-primary' onClick={() => confirm(getRider)}>
                     Register
                 </button>
             </form>
