@@ -83,12 +83,12 @@ const Repair = ({API_URL}) => {
         let id="";
         for(let i=1;i<component.length;i++)
             id+=component[i];
-        if(component[0] === 'b' && pres("items/bat", id)){
-            return repairBattery(id);
+        if(component[0] === 'b'){
+            return pres("items/bat", id, repairBattery);
         };
-        pres("vehicles", id, repairVehicle) 
+        return pres("vehicles", id, repairVehicle) 
     }
-    
+
     const confirm = (cb) => {
     const confirmBox = window.confirm( "Do you want to continue" )
     if (confirmBox === true) 
