@@ -22,7 +22,7 @@ const RegDriver = ({ API_URL }) => {
 	const [entryvehSecurity, setentryvehSecurity] = useState()
 	const [entrybatSecurity, setentrybatSecurity] = useState()
 	const [entrysoc, setentrysoc] = useState(1)
-	const [entrystation, setentrystation] = useState()
+	const [entrystation, setentrystation] = useState("Station 1")
 
 	useEffect(() => {
 		fetch(`${API_URL}/items`)
@@ -103,6 +103,8 @@ const RegDriver = ({ API_URL }) => {
 		if (scooter === '0') {
 			return alert('Pick a scooter');
 		}
+		if(rider.scooterId !== "Not Assigned" || rider.batteryId !== "Not Assigned")
+			return alert("Rider already has a battery/scooter")
 		if(!checkSoc(entrysoc)) return alert("Charge Must be between 0 and 50")
 		await assignVehicle(entryRider.name, entryRider.number,scooter);
 		addRider(scooter);
@@ -236,7 +238,14 @@ const RegDriver = ({ API_URL }) => {
 									<input className='form-control' placeholder='State of Charge' onChange={e=> setentrysoc(e.target.value)}/>
 								</div>
 								<div className='col-12'>
-									<input className='form-control' placeholder='Station Name' onChange={e=> setentrystation(e.target.value)}/>
+									<select className='form-select' onChange={e=> setentrystation(e.target.value)}>
+										<option defaultValue value='Station 1'>
+											Station 1
+										</option>
+										<option value='Station 2'>
+											Station 2
+										</option>
+									</select>
 								</div>
 								<button type='button' className='btn btn-primary' onClick={() => confirm(register)} disabled= {entryFlag}>
 									Register

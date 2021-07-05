@@ -46,7 +46,8 @@ const Repair = ({API_URL}) => {
                 },
             }),
 			headers: { 'Content-Type': 'application/json' },
-		}).then(() => alert(type + "Repaired"));
+		}).then(() => alert(type + " repaired"));
+        setComponent("-1");
     }
 
     const repairVehicle = id => {

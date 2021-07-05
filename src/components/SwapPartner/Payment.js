@@ -13,7 +13,7 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 			method: 'PUT',
 			body: JSON.stringify({ number: rider.number }),
 			headers: { 'Content-Type': 'application/json' },
-		}).then(() => console.log('updated rider'));
+		}).then(() => setTask(false));
 	};
 
 	const updateBattery = async () => {

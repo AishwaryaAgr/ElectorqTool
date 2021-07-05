@@ -22,7 +22,7 @@ const TakeRent = ({ API_URL, setTask }) => {
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => alert('Rent Paid'));
 
-		fetch(`${API_URL}/riders/rent`, {
+		fetch(`${API_URL}/riders/rents`, {
 			method: 'PUT',
 			body: JSON.stringify({ id: vehicle.scooterId }),
 			headers: { 'Content-Type': 'application/json' },

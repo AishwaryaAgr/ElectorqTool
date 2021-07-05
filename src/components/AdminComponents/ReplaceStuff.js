@@ -17,12 +17,12 @@ const ReplaceStuff = ({ API_URL }) => {
 	const [batteryId, setBatteryId] = useState('');
 	const [soc, setSoc] = useState('');
 	const [oldSoc, setOldSoc] = useState('');
-	const [station, setStation] = useState('');
+	const [station, setStation] = useState('Station 1');
 	const [time, setTime] = useState('');
 	const [date, setDate] = useState('');
-	const [finalDate, setFinalDate] = useState('');
 	const [desc, setDesc] = useState('');
 	const [battery, setBattery] = useState(absent);
+	const [reset, setReset] = useState(true);
 
 	useEffect(() => {
 		fetch(`${API_URL}/items`)
@@ -60,26 +60,13 @@ const ReplaceStuff = ({ API_URL }) => {
 				} else {
 					console.log(item);
 					if (item.batteryId !== 'Not Assigned') getBattery(item.number);
+					setReset(false);
 					return setRider(item);
 				}
 			});
 	};
 
-	const datefun = () => {
-		let nDate = new Date(date);
-		console.log(nDate.getMonth());
-		let m = nDate.getMonth(),
-			y = nDate.getFullYear(),
-			d = nDate.getDate();
-		let hour = '',
-			min = '';
-		for (let i in time) {
-			if (i < 2) hour += time[i];
-			if (i > 2) min += time[i];
-		}
-		let nTime = new Date(y, m, d, hour, min);
-		setFinalDate(nTime);
-	};
+
 	const changeInBattery = () => {
 		let stationnew = battery.station;
 		if (station !== '') stationnew = station;
@@ -157,7 +144,8 @@ const ReplaceStuff = ({ API_URL }) => {
 			});
 	};
 
-	const report = (productType, componentId) => {
+	const report = (productType, componentId, finalTime) => {
+		console.log(finalTime);
 		fetch(`${API_URL}/complaints`, {
 			method: 'POST',
 			body: JSON.stringify({
@@ -165,18 +153,29 @@ const ReplaceStuff = ({ API_URL }) => {
 				id: componentId,
 				complaintType: 'Unexpected Failure',
 				desc,
-				date: finalDate,
+				date: finalTime,
 				number: rider.number,
 			}),
 			headers: { 'Content-Type': 'application/json' },
-		}).then(() => console.log('Changed in Rider Battery'));
+		}).then(() => setReset(true));
 	};
 
 	const replace = () => {
-		datefun();
+		let nDate = new Date(date);
+		console.log(nDate.getMonth());
+		let m = nDate.getMonth(),
+			y = nDate.getFullYear(),
+			d = nDate.getDate();
+		let hour = '',
+			min = '';
+		for (let i in time) {
+			if (i < 2) hour += time[i];
+			if (i > 2) min += time[i];
+		}
+		let nTime = new Date(y, m, d, hour, min);
 		if (vehicleId !== '' && vehicleId !== '-1' && rider.scooterId !== 'Not Assigned') {
 			replaceVehicle();
-			report('scooter', rider.scooterId);
+			report('scooter', rider.scooterId, nTime);
 		}
 		if (
 			!(batteryId === '' || soc === '' || battery === absent) &&
@@ -185,9 +184,10 @@ const ReplaceStuff = ({ API_URL }) => {
 			rider.batteryId !== 'Not Assigned'
 		) {
 			if (!checkSoc(soc) || !checkSoc(oldSoc)) return alert('Charge Must be between 0 and 50');
+			if(Number(oldSoc)> Number(battery.batteryCharge)) return alert("Old Battery Charge in valid!") 
 
 			replaceBattery();
-			report('battery', rider.batteryId);
+			report('battery', rider.batteryId, nTime);
 		}
 	};
 	const confirm = (cb) => {
@@ -264,12 +264,14 @@ const ReplaceStuff = ({ API_URL }) => {
 							placeholder='New Battery SoC'
 							onChange={(e) => setSoc(e.target.value)}
 						/>
-						<input
-							className='form-control'
-							id='number'
-							placeholder='Station'
-							onChange={(e) => setStation(e.target.value)}
-						/>
+						<select className='form-select' onChange={e=> setStation(e.target.value)}>
+							<option defaultValue value='Station 1'>
+								Station 1
+							</option>
+							<option value='Station 2'>
+								Station 2
+							</option>
+						</select>
 					</div>
 					<div className='col-12' id='vehicle'>
 						<input
@@ -304,7 +306,7 @@ const ReplaceStuff = ({ API_URL }) => {
 						type='button'
 						className='btn btn-primary'
 						onClick={() => confirm(replace)}
-						disabled={rider === absent}>
+						disabled={reset === true}>
 						Confirm Replacement
 					</button>
 				</form>

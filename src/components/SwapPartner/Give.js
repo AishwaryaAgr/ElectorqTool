@@ -183,7 +183,14 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 					</div>
 
 					<div className='col-12'>
-						<input className='form-control' id='station' placeholder='Station Name' />
+						<select className='form-select' id="station">
+							<option defaultValue value='Station 1'>
+								Station 1
+							</option>
+							<option value='Station 2'>
+								Station 2
+							</option>
+						</select>
 					</div>
 					<div className='col-12'>
 						{(() => {
