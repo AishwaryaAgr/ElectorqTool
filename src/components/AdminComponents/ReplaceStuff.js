@@ -189,6 +189,9 @@ const ReplaceStuff = ({ API_URL }) => {
 			replaceBattery();
 			report('battery', rider.batteryId, nTime);
 		}
+		else{
+			return alert("Rider does not have a battery/vehicle")
+		}
 	};
 	const confirm = (cb) => {
 		const confirmBox = window.confirm('Do you want to continue');
@@ -261,6 +264,7 @@ const ReplaceStuff = ({ API_URL }) => {
 						<input
 							className='form-control'
 							id='number'
+							type="number"
 							placeholder='New Battery SoC'
 							onChange={(e) => setSoc(e.target.value)}
 						/>
