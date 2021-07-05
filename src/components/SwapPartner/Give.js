@@ -66,6 +66,8 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 		fetch(`${API_URL}/items/${rider.number}`)
 			.then((vehicle) => vehicle.json())
 			.then((item) => {
+				if(Number(item.batteryCharge)>Number(charge))
+					return alert("Battery Chaarge cannot increase")
 				let sett = { ...item, soc: charge, newstate: station };
 				setCurrent(sett);
 				document.querySelector('#sId').value = '0';
