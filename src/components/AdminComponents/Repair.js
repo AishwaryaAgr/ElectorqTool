@@ -69,14 +69,26 @@ const Repair = ({API_URL}) => {
         report("battery", id);
     }
 
+    const pres = (val,id) => {
+        return fetch(`${API_URL}/${val}/${id}`)
+            .then(item=> item.json())
+            .then(item =>{
+                if(item === null)
+                    return true;
+                return false;
+            })
+    }
+
     const repair = () => {
         let id="";
         for(let i=1;i<component.length;i++)
             id+=component[i];
-        if(component[0] === 'b'){
+        if(component[0] === 'b' && pres("items/bat", id)){
             return repairBattery(id);
         };
-        return repairVehicle(id);    
+        if(pres("vehicles", id))
+            return repairVehicle(id); 
+        return alert("Item already repaired")   
     }
     const confirm = (cb) => {
     const confirmBox = window.confirm( "Do you want to continue" )
