@@ -100,8 +100,8 @@ const RegDriver = ({ API_URL }) => {
 	const register = async () => {
 		const scooter = document.querySelector('#sId').value;
 
-		if (scooter === '0') {
-			return alert('Pick a scooter');
+		if (scooter === '0' || entrybatId === "-1" || entryvehSecurity === "" || entrybatSecurity === "") {
+			return alert('Fill the fields');
 		}
 		if(entryRider.scooterId !== "Not Assigned" ||  entryRider.batteryId !== "Not Assigned")
 			return alert("Rider already has a battery/scooter")
