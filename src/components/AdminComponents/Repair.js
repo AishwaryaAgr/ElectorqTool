@@ -69,7 +69,7 @@ const Repair = ({API_URL}) => {
         report("battery", id);
     }
 
-    const pres = (val,id) => {
+    const pres = async (val,id) => {
         return fetch(`${API_URL}/${val}/${id}`)
             .then(item=> item.json())
             .then(item =>{
