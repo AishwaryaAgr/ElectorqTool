@@ -154,7 +154,7 @@ const TakeRent = ({ API_URL, setTask }) => {
 									<div className='d-flex'>
 										<span className='dollar'>₹</span>
 										<input
-											type='text'
+											type='number'
 											name='text'
 											className='form-control ml-1'
 											placeholder='Enter Amount'
