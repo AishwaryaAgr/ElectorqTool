@@ -103,7 +103,7 @@ const RegDriver = ({ API_URL }) => {
 		if (scooter === '0') {
 			return alert('Pick a scooter');
 		}
-		if(rider.scooterId !== "Not Assigned" || rider.batteryId !== "Not Assigned")
+		if(entryRider.scooterId !== "Not Assigned" ||  entryRider.batteryId !== "Not Assigned")
 			return alert("Rider already has a battery/scooter")
 		if(!checkSoc(entrysoc)) return alert("Charge Must be between 0 and 50")
 		await assignVehicle(entryRider.name, entryRider.number,scooter);
