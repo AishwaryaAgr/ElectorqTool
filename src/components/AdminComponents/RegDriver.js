@@ -18,9 +18,9 @@ const RegDriver = ({ API_URL }) => {
 	const [entryRider, setentryRider] = useState(absent)
 	const [entryFlag, setentryFlag] = useState(true)
 	const [entrynum, setentryNum] = useState()
-	const [entrybatId, setentrybatId] = useState()
-	const [entryvehSecurity, setentryvehSecurity] = useState()
-	const [entrybatSecurity, setentrybatSecurity] = useState()
+	const [entrybatId, setentrybatId] = useState("-1")
+	const [entryvehSecurity, setentryvehSecurity] = useState("")
+	const [entrybatSecurity, setentrybatSecurity] = useState("")
 	const [entrysoc, setentrysoc] = useState(1)
 	const [entrystation, setentrystation] = useState("Station 1")
 
@@ -101,7 +101,7 @@ const RegDriver = ({ API_URL }) => {
 		const scooter = document.querySelector('#sId').value;
 
 		if (scooter === '0' || entrybatId === "-1" || entryvehSecurity === "" || entrybatSecurity === "") {
-			return alert('Fill the fields');
+			return alert('Fill all the fields');
 		}
 		if(entryRider.scooterId !== "Not Assigned" ||  entryRider.batteryId !== "Not Assigned")
 			return alert("Rider already has a battery/scooter")
