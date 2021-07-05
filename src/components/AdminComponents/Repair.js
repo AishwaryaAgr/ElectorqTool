@@ -69,13 +69,13 @@ const Repair = ({API_URL}) => {
         report("battery", id);
     }
 
-    const pres = async (val,id) => {
-        return fetch(`${API_URL}/${val}/${id}`)
+    const pres = async (val,id,cb) => {
+        fetch(`${API_URL}/${val}/${id}`)
             .then(item=> item.json())
             .then(item =>{
                 if(item === null)
-                    return true;
-                return false;
+                    return cb(id);
+                return alert("Item already repaired")
             })
     }
 
@@ -86,10 +86,9 @@ const Repair = ({API_URL}) => {
         if(component[0] === 'b' && pres("items/bat", id)){
             return repairBattery(id);
         };
-        if(pres("vehicles", id))
-            return repairVehicle(id); 
-        return alert("Item already repaired")   
+        pres("vehicles", id, repairVehicle) 
     }
+    
     const confirm = (cb) => {
     const confirmBox = window.confirm( "Do you want to continue" )
     if (confirmBox === true) 
