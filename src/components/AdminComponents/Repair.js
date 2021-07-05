@@ -23,7 +23,7 @@ const Repair = ({API_URL}) => {
 			.then((item) => item.json())
 			.then((items) => setAllVehicles(items));
 		console.log("object")
-    }, [API_URL])
+    }, [API_URL, component])
 
     const checkSoc = charge => {
 		if(Number(charge)<0 || Number(charge)>50)
