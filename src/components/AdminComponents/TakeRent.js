@@ -46,6 +46,8 @@ const TakeRent = ({ API_URL, setTask }) => {
 	};
 
 	const takeRent = async () => {
+		if(days === '')
+			return alert("Don't cheat");
 		const scooter = document.querySelector('#sId').value;
 		const amount = document.querySelector('#amount').value;
 		let transactionId = 'Cash';
