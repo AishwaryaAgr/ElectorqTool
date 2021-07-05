@@ -179,6 +179,9 @@ const ReplaceStuff = ({ API_URL }) => {
 			replaceVehicle(nTime);
 			
 		}
+		else{
+			return alert("Vehicle not replaced")
+		}
 		if (
 			!(batteryId === '' || soc === '' || battery === absent) &&
 			batteryId !== '-1' &&
@@ -192,7 +195,7 @@ const ReplaceStuff = ({ API_URL }) => {
 			
 		}
 		else{
-			return alert("Rider does not have a battery/vehicle")
+			return alert("Battery not replaced")
 		}
 	};
 	const confirm = (cb) => {
