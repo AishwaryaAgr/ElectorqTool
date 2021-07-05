@@ -180,7 +180,7 @@ const ReplaceStuff = ({ API_URL }) => {
 			
 		}
 		else{
-			return alert("Vehicle not replaced")
+			alert("Vehicle not replaced")
 		}
 		if (
 			!(batteryId === '' || soc === '' || battery === absent) &&
@@ -192,10 +192,9 @@ const ReplaceStuff = ({ API_URL }) => {
 			if(Number(oldSoc)> Number(battery.batteryCharge)) return alert("Old Battery Charge in valid!") 
 
 			replaceBattery(nTime);
-			
 		}
 		else{
-			return alert("Battery not replaced")
+			alert("Battery not replaced")
 		}
 	};
 	const confirm = (cb) => {
