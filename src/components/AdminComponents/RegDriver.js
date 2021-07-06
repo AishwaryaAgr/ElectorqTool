@@ -22,7 +22,7 @@ const RegDriver = ({ API_URL }) => {
 	const [entryvehSecurity, setentryvehSecurity] = useState("")
 	const [entrybatSecurity, setentrybatSecurity] = useState("")
 	const [entrysoc, setentrysoc] = useState("")
-	const [entrystation, setentrystation] = useState("Station 1")
+	const [entrystation, setentrystation] = useState("Saket")
 
 	useEffect(() => {
 		fetch(`${API_URL}/items`)
@@ -169,32 +169,30 @@ const RegDriver = ({ API_URL }) => {
 					<div className='col-12'>
 						<select className='form-select' id='sId' onChange={(e)=>riderName(e.target.value)}>
 							<option defaultValue value='0'>Scooter Number</option>
-							<option value='1'>One</option>
-							<option value='2'>Two</option>
-							<option value='3'>Three</option>
-							<option value='4'>Four</option>
-							<option value='5'>Five</option>
-							<option value='6'>Six</option>
-							<option value='7'>Seven</option>
-							<option value='8'>Eight</option>
-							<option value='9'>Nine</option>
-							<option value='10'>Ten</option>
-							<option value='11'>Eleven</option>
-							<option value='12'>Twelve</option>
-							<option value='13'>Thirteen</option>
-							<option value='14'>Forteen</option>
-							<option value='15'>Fifteen</option>
-							<option value='16'>Sixteen</option>
-							<option value='17'>Seventeen</option>
-							<option value='18'>Eighteen</option>
-							<option value='19'>Nineteen</option>
-							<option value='20'>Twenty</option>
-							<option value='21'>Twentyone</option>
-							<option value='22'>Twentytwo</option>
-							<option value='23'>Twentythree</option>
-							<option value='24'>Twentyfour</option>
-							<option value='25'>Twentyfive</option>
-							<option value='26'>Twentysix</option>
+							<option value='24'>Scooter No. 24</option>
+							<option value='25'>Scooter No. 25</option>
+							<option value='26'>Scooter No. 26</option>
+							<option value='27'>Scooter No. 27</option>
+							<option value='28'>Scooter No. 28</option>
+							<option value='29'>Scooter No. 29</option>
+							<option value='30'>Scooter No. 30</option>
+							<option value='31'>Scooter No. 31</option>
+							<option value='32'>Scooter No. 32</option>
+							<option value='33'>Scooter No. 33</option>
+							<option value='34'>Scooter No. 34</option>
+							<option value='35'>Scooter No. 35</option>
+							<option value='36'>Scooter No. 36</option>
+							<option value='37'>Scooter No. 37</option>
+							<option value='38'>Scooter No. 38</option>
+							<option value='39'>Scooter No. 39</option>
+							<option value='40'>Scooter No. 40</option>
+							<option value='41'>Scooter No. 41</option>
+							<option value='42'>Scooter No. 42</option>
+							<option value='43'>Scooter No. 43</option>
+							<option value='44'>Scooter No. 44</option>
+							<option value='46'>Scooter No. 46</option>
+							<option value='47'>Scooter No. 47</option>
+							<option value='48'>Scooter No. 48</option>
 						</select>
 					</div>
 					
@@ -239,11 +237,11 @@ const RegDriver = ({ API_URL }) => {
 								</div>
 								<div className='col-12'>
 									<select className='form-select' onChange={e=> setentrystation(e.target.value)}>
-										<option defaultValue value='Station 1'>
-											Station 1
+										<option defaultValue value='Saket'>
+											Saket
 										</option>
-										<option value='Station 2'>
-											Station 2
+										<option value='MalviyaNagar'>
+											MalviyaNagar
 										</option>
 									</select>
 								</div>

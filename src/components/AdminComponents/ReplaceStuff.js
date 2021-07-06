@@ -17,7 +17,7 @@ const ReplaceStuff = ({ API_URL }) => {
 	const [batteryId, setBatteryId] = useState('');
 	const [soc, setSoc] = useState('');
 	const [oldSoc, setOldSoc] = useState('');
-	const [station, setStation] = useState('Station 1');
+	const [station, setStation] = useState('Saket');
 	const [time, setTime] = useState('');
 	const [date, setDate] = useState('');
 	const [desc, setDesc] = useState('');
@@ -273,12 +273,12 @@ const ReplaceStuff = ({ API_URL }) => {
 							onChange={(e) => setSoc(e.target.value)}
 						/>
 						<select className='form-select' onChange={e=> setStation(e.target.value)}>
-							<option defaultValue value='Station 1'>
-								Station 1
-							</option>
-							<option value='Station 2'>
-								Station 2
-							</option>
+							<option defaultValue value='Saket'>
+											Saket
+										</option>
+										<option value='MalviyaNagar'>
+											MalviyaNagar
+										</option>
 						</select>
 					</div>
 					<div className='col-12' id='vehicle'>

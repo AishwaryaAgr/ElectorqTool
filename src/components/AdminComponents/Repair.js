@@ -8,7 +8,7 @@ const Repair = ({API_URL}) => {
     const [component, setComponent] = useState("-1")
     const [soc, setSoc] = useState("")
     const [repairedBy, setRepairedBy] = useState("")
-    const [station, setStation] = useState("Station 1")
+    const [station, setStation] = useState("Saket")
     const [consumables, setConsumables] = useState("")
     const [cost, setCost] = useState("")
     const [desc, setDesc] = useState("");
@@ -141,12 +141,12 @@ const Repair = ({API_URL}) => {
                             <div className="col-12" id="battery">
                                 <input className='form-control' id='number' placeholder='New Battery SoC' type="number" onChange={(e)=>setSoc(e.target.value)}/>
                                 <select className='form-select' onChange={e=> setStation(e.target.value)}>
-                                    <option defaultValue value='Station 1'>
-                                        Station 1
-                                    </option>
-                                    <option value='Station 2'>
-                                        Station 2
-                                    </option>
+                                    <option defaultValue value='Saket'>
+											Saket
+										</option>
+										<option value='MalviyaNagar'>
+											MalviyaNagar
+										</option>
                                 </select>
                             </div>
                         )
