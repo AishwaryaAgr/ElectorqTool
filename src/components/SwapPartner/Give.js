@@ -27,6 +27,10 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 		return true;
 	}
 
+	const stationData = (bId, newCharge, oldCharge, station) =>{
+		console.log(bId, newCharge, oldCharge, station);
+	}
+
 	const riderUpdate = async (bId) => {
 		fetch(`${API_URL}/riders/swap`, {
 			method: 'PUT',
@@ -51,7 +55,12 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 		const station = document.querySelector('#station').value;
 		if(!checkSoc(charge)) return alert("Charge Must be between 0 and 50");
 		await riderUpdate(bId);
-		batteryUpdate(bId, charge, station);
+		fetch(`${API_URL}/items/bat/${bId}`)
+			.then(item => item.json())
+			.then(item=>{
+				stationData(bId,charge,item.batteryCharge,station);
+				batteryUpdate(bId, charge, station);
+			})
 		setRider(absent);
 		document.querySelector('#sId').value = '0';
 		document.querySelector('#bId').value = '-1';
@@ -61,10 +70,10 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 
 	const getBattery = () => {
 		const charge = document.querySelector('#charge').value;
-		if(!checkSoc(charge)) return alert("Charge Must be between 0 and 50")
+		if(!checkSoc(charge) || charge === "") return alert("Charge Must be between 0 and 50")
 		const station = document.querySelector('#station').value;
 		fetch(`${API_URL}/items/${rider.number}`)
-			.then((vehicle) => vehicle.json())
+			.then(item => item.json())
 			.then((item) => {
 				if(Number(item.batteryCharge)<Number(charge))
 					return alert("Battery Charge cannot increase")
