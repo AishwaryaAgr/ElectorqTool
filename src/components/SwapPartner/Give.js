@@ -28,7 +28,7 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 	}
 
 	const stationData = (bId, newCharge, oldCharge, station) =>{
-		console.log(bId, newCharge, oldCharge, station);
+		return console.log(bId, newCharge, oldCharge, station);
 	}
 
 	const riderUpdate = async (bId) => {
@@ -54,6 +54,7 @@ const Give = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }
 		const charge = document.querySelector('#charge').value;
 		const station = document.querySelector('#station').value;
 		if(!checkSoc(charge)) return alert("Charge Must be between 0 and 50");
+		if(bId === "-1") return alert("Add Battery Id")
 		await riderUpdate(bId);
 		fetch(`${API_URL}/items/bat/${bId}`)
 			.then(item => item.json())

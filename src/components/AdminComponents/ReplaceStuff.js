@@ -175,7 +175,7 @@ const ReplaceStuff = ({ API_URL }) => {
 			if (i > 2) min += time[i];
 		}
 		let nTime = new Date(y, m, d, hour, min);
-		if (vehicleId !== '' && vehicleId !== '-1' && rider.scooterId !== 'Not Assigned') {
+		if (vehicleId !== '' && vehicleId !== '-1' && rider.scooterId !== 'Not Assigned' && rider.scooterId !== '-1') {
 			replaceVehicle(nTime);
 			
 		}
@@ -186,7 +186,8 @@ const ReplaceStuff = ({ API_URL }) => {
 			!(batteryId === '' || soc === '' || battery === absent) &&
 			batteryId !== '-1' &&
 			oldSoc !== '' &&
-			rider.batteryId !== 'Not Assigned'
+			rider.batteryId !== 'Not Assigned' &&
+			rider.battteryId !== "-1"
 		) {
 			if (!checkSoc(soc) || !checkSoc(oldSoc)) return alert('Charge Must be between 0 and 50');
 			if(Number(oldSoc)> Number(battery.batteryCharge)) return alert("Old Battery Charge in valid!") 
