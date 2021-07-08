@@ -60,7 +60,7 @@ const UnderMaintenance = ({ API_URL }) => {
         if(!checkSoc(soc)) return alert("Charge Must be between 0 and 50");
         fetch(`${API_URL}/items/under`, {
 			method: 'PUT',
-			body: JSON.stringify({ id, soc, station }),
+			body: JSON.stringify({ id}),
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => console.log('Changed in Battery'));
         report("battery", id);
