@@ -24,7 +24,7 @@ const UnderMaintenance = ({ API_URL }) => {
     }, [API_URL, component])
 
     const checkSoc = charge => {
-		if(Number(charge)<0 || Number(charge)>50)
+		if(Number(charge)<0 || Number(charge)>50 || charge === "")
 			return false;
 		return true;
 	}
