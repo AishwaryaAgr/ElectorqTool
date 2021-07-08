@@ -135,23 +135,6 @@ const UnderMaintenance = ({ API_URL }) => {
                         </select>
                     </div>
 
-                    {(() => {
-					if (component[0] === 'b') {
-                        return(
-                            <div className="col-12" id="battery">
-                                <input className='form-control' id='number' placeholder='New Battery SoC' type="number" onChange={(e)=>setSoc(e.target.value)}/>
-                                <select className='form-select' onChange={e=> setStation(e.target.value)}>
-                                    <option defaultValue value='Saket'>
-											Saket
-										</option>
-										<option value='MalviyaNagar'>
-											MalviyaNagar
-										</option>
-                                </select>
-                            </div>
-                        )
-					}
-				})()}
                     
                     <div className="col-12" id="vehicle">
                         <input className='form-control' id='number' placeholder='Reporting By' onChange={(e)=>setRepairedBy(e.target.value)}/>
