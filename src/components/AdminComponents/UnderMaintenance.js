@@ -6,9 +6,7 @@ const UnderMaintenance = ({ API_URL }) => {
 	const [allBatteries, setAllBatteries] = useState([])
     const [allVehicles, setAllVehicles] = useState([])
     const [component, setComponent] = useState("-1")
-    const [soc, setSoc] = useState("")
     const [repairedBy, setRepairedBy] = useState("")
-    const [station, setStation] = useState("Saket")
     const [desc, setDesc] = useState("");
 
     useEffect(() => {
@@ -22,12 +20,6 @@ const UnderMaintenance = ({ API_URL }) => {
 			.then((items) => setAllVehicles(items));
 		console.log("object")
     }, [API_URL, component])
-
-    const checkSoc = charge => {
-		if(Number(charge)<0 || Number(charge)>50 || charge === "")
-			return false;
-		return true;
-	}
 
     const report = (type,id)=>{
         fetch(`${API_URL}/complaints/repair`, {
@@ -57,7 +49,7 @@ const UnderMaintenance = ({ API_URL }) => {
     }
 
     const underBattery = id => {
-        if(!checkSoc(soc)) return alert("Charge Must be between 0 and 50");
+        
         fetch(`${API_URL}/items/under`, {
 			method: 'PUT',
 			body: JSON.stringify({ id}),
