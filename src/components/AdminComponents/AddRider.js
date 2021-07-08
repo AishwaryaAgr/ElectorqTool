@@ -38,7 +38,7 @@ const AddRider = ({API_URL}) => {
     }
 
     return (
-        <div className='container mt-5'
+        <div className='container'
 				style={{
 					alignItems: 'center',
 					justifyContent: 'center',

@@ -1,16 +1,14 @@
-import React, {useState, useEffect} from 'react'
+/** @format */
 
-const Repair = ({API_URL}) => {
+import React, { useState, useEffect } from 'react';
 
-    
-    const [allBatteries, setAllBatteries] = useState([])
+const UnderMaintenance = ({ API_URL }) => {
+	const [allBatteries, setAllBatteries] = useState([])
     const [allVehicles, setAllVehicles] = useState([])
     const [component, setComponent] = useState("-1")
     const [soc, setSoc] = useState("")
     const [repairedBy, setRepairedBy] = useState("")
     const [station, setStation] = useState("Saket")
-    const [consumables, setConsumables] = useState("")
-    const [cost, setCost] = useState("")
     const [desc, setDesc] = useState("");
 
     useEffect(() => {
@@ -37,31 +35,30 @@ const Repair = ({API_URL}) => {
 			body: JSON.stringify({
                 productType: type,
                 id,
-                complaintType: "Item Repaired",
+                complaintType: "Sent for Maintenance",
                 desc: {
-                    cost,
                     repairedBy,
-                    consumables,
                     desc
                 },
             }),
 			headers: { 'Content-Type': 'application/json' },
-		}).then(() => alert(type + " repaired"));
+		}).then(() => alert(type + " removed from fleet"));
         setComponent("-1");
+        document.querySelector("#cId").value = -1;
     }
 
-    const repairVehicle = id => {
+    const underVehicle = id => {
         fetch(`${API_URL}/vehicles/unallot/${id}`, {
 			method: 'PUT',
-			body: JSON.stringify({status: "Not Assigned"}),
+			body: JSON.stringify({status: "Under Maintenance"}),
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => console.log('Changed in Vehicle'));
         report("vehicle",id)
     }
 
-    const repairBattery = id => {
+    const underBattery = id => {
         if(!checkSoc(soc)) return alert("Charge Must be between 0 and 50");
-        fetch(`${API_URL}/items/repair`, {
+        fetch(`${API_URL}/items/under`, {
 			method: 'PUT',
 			body: JSON.stringify({ id, soc, station }),
 			headers: { 'Content-Type': 'application/json' },
@@ -73,20 +70,23 @@ const Repair = ({API_URL}) => {
         fetch(`${API_URL}/${val}/${id}`)
             .then(item=> item.json())
             .then(item =>{
-                if(item.status === "Under Maintenance")
+                if(item.status === "Not Assigned")
                     return cb(id);
-                return alert("Item already repaired")
+                return alert("Check the item id")
             })
     }
 
-    const repair = () => {
+    const under = () => {
         let id="";
         for(let i=1;i<component.length;i++)
             id+=component[i];
         if(component[0] === 'b'){
-            return pres("items/bat", id, repairBattery);
+            return pres("items/bat", id, underBattery);
         };
-        return pres("vehicles", id, repairVehicle) 
+        if(component[0] === 's'){
+            return pres("vehicles", id, underVehicle);
+        };
+        return alert("Select Component");
     }
 
     const confirm = (cb) => {
@@ -98,7 +98,7 @@ const Repair = ({API_URL}) => {
     return (
         <>
             <div
-                className='container '
+                className='container'
                 style={{
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -113,7 +113,7 @@ const Repair = ({API_URL}) => {
                                 Component
                             </option>
                             {allVehicles.map((battery, index) => {
-                                if (battery.status === 'Under Maintenance')
+                                if (battery.status === 'Not Assigned')
                                     return (
                                         <option value={"s"+battery.scooterId} key={index}>
                                             Scooter No.
@@ -123,7 +123,7 @@ const Repair = ({API_URL}) => {
                                 return <option key={index} style={{ display: 'none' }}></option>;
                             })}
                             {allBatteries.map((battery, index) => {
-                                if (battery.status === 'Under Maintenance')
+                                if (battery.status === 'Not Assigned')
                                     return (
                                         <option value={"b"+battery.batteryId} key={index}>
                                             Battery No.
@@ -154,12 +154,10 @@ const Repair = ({API_URL}) => {
 				})()}
                     
                     <div className="col-12" id="vehicle">
-                        <input className='form-control' id='number' placeholder='Repaired By' onChange={(e)=>setRepairedBy(e.target.value)}/>
-                        <input type="text" className='form-control' id='number' placeholder='Consumables Required' onChange={(e)=>setConsumables(e.target.value)}/>
-                        <input type="text" className='form-control' id='number' placeholder='Cost of repair' onChange={(e)=>setCost(e.target.value)}/>
+                        <input className='form-control' id='number' placeholder='Reporting By' onChange={(e)=>setRepairedBy(e.target.value)}/>
                         <input type="text" className='form-control' id='number' placeholder='Description' onChange={(e)=>setDesc(e.target.value)}/>
                     </div>
-                    <button type='button' className='btn btn-primary' disabled= {component === "-1"} onClick={()=>confirm(repair)}>
+                    <button type='button' className='btn btn-primary' disabled= {component === "-1"} onClick={()=>confirm(under)}>
                         Confirm 
                     </button>
                 </form>
@@ -168,4 +166,4 @@ const Repair = ({API_URL}) => {
     )
 }
 
-export default Repair
+export default UnderMaintenance

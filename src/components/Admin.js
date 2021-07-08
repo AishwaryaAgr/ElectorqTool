@@ -8,6 +8,7 @@ import AddRider from './AdminComponents/AddRider';
 import RemoveRider from './AdminComponents/RemoveRider';
 import ReplaceStuff from './AdminComponents/ReplaceStuff';
 import Repair from './AdminComponents/Repair';
+import UnderMaintenance from './AdminComponents/UnderMaintenance';
 
 const Admin = ({ API_URL }) => {
 	const [task, setTask] = useState('Rider');
@@ -20,12 +21,14 @@ const Admin = ({ API_URL }) => {
 						Assign Rider
 					</button>
 					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Add')}>Add Rider</button>
-					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Replace')}>Replace Vehicle/Battery</button> 
 					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Remove')}>Remove Rider</button>
+					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Rent')}>Take Rent </button>
+				</div>
+				<div className='navbar-nav flex flex-row'>
+					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Replace')}>Replace Vehicle/Battery</button>
 					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Repair')}>Repaired Component</button>
-					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Rent')}>
-						Take Rent
-					</button>
+					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Under')}>Send for Maintenance</button>
+					
 				</div>
 			</nav>
 			{(() => {
@@ -43,6 +46,9 @@ const Admin = ({ API_URL }) => {
 				}
 				else if(task === "Repair"){
 				    return <Repair API_URL={API_URL}/>
+				}
+				else if(task === "Under"){
+				    return <UnderMaintenance API_URL={API_URL}/>
 				}
 				else return <TakeRent API_URL={API_URL} setTask={setTask} />;
 			})()}

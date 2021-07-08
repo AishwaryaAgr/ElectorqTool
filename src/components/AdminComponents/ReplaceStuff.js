@@ -206,7 +206,7 @@ const ReplaceStuff = ({ API_URL }) => {
 	return (
 		<>
 			<div
-				className='container mt-5'
+				className='container '
 				style={{
 					alignItems: 'center',
 					justifyContent: 'center',

@@ -103,7 +103,7 @@ const TakeRent = ({ API_URL, setTask }) => {
 
 	return (
 		<>
-			<div className='container d-flex justify-content-center mt-5 pt-2'>
+			<div className='container d-flex justify-content-center pt-2'>
 				<div className='card pt-4'>
 					<div>
 						<div className='py-2 px-3'>
