@@ -65,7 +65,21 @@ const ReplaceStuff = ({ API_URL }) => {
 				}
 			});
 	};
-
+		const report = (productType, componentId, finalTime) => {
+		console.log(finalTime);
+		fetch(`${API_URL}/complaints`, {
+			method: 'POST',
+			body: JSON.stringify({
+				productType,
+				id: componentId,
+				complaintType: 'Unexpected Failure',
+				desc,
+				date: finalTime,
+				number: rider.number,
+			}),
+			headers: { 'Content-Type': 'application/json' },
+		}).then(() => setReset(true));
+	};
 
 	const changeInBattery = () => {
 		let stationnew = battery.station;
@@ -146,22 +160,6 @@ const ReplaceStuff = ({ API_URL }) => {
 			});
 	};
 
-	const report = (productType, componentId, finalTime) => {
-		console.log(finalTime);
-		fetch(`${API_URL}/complaints`, {
-			method: 'POST',
-			body: JSON.stringify({
-				productType,
-				id: componentId,
-				complaintType: 'Unexpected Failure',
-				desc,
-				date: finalTime,
-				number: rider.number,
-			}),
-			headers: { 'Content-Type': 'application/json' },
-		}).then(() => setReset(true));
-	};
-
 	const replace = () => {
 		let nDate = new Date(date);
 		console.log(nDate.getMonth());
@@ -175,6 +173,9 @@ const ReplaceStuff = ({ API_URL }) => {
 			if (i > 2) min += time[i];
 		}
 		let nTime = new Date(y, m, d, hour, min);
+		if(date === '' || time === '')
+			return alert("Set Issue Date and Time");
+			
 		if (vehicleId !== '' && vehicleId !== '-1' && rider.scooterId !== 'Not Assigned' && rider.scooterId !== '-1') {
 			replaceVehicle(nTime);
 			
