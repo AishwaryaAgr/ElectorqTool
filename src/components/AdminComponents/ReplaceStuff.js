@@ -73,7 +73,7 @@ const ReplaceStuff = ({ API_URL }) => {
 				productType,
 				id: componentId,
 				complaintType: 'Unexpected Failure',
-				desc,
+				desc: {desc},
 				date: finalTime,
 				number: rider.number,
 			}),

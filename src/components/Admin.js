@@ -5,6 +5,7 @@ import RegDriver from './AdminComponents/RegDriver';
 // import RegBattery from './AdminComponents/RegBattery'
 import TakeRent from './AdminComponents/TakeRent';
 import AddRider from './AdminComponents/AddRider';
+import AddError from './AdminComponents/AddError';
 import RemoveRider from './AdminComponents/RemoveRider';
 import ReplaceStuff from './AdminComponents/ReplaceStuff';
 import Repair from './AdminComponents/Repair';
@@ -21,13 +22,14 @@ const Admin = ({ API_URL }) => {
 						Assign Rider
 					</button>
 					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Add')}>Add Rider</button>
-					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Remove')}>Remove Rider</button>
-					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Rent')}>Take Rent </button>
+					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Replace')}>Replace Component</button>
+					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Repair')}>Repaired Component</button>
 				</div>
 				<div className='navbar-nav flex flex-row'>
-					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Replace')}>Replace Vehicle/Battery</button>
-					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Repair')}>Repaired Component</button>
+					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Remove')}>Remove Rider</button>
+					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Rent')}>Take Rent </button>
 					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Under')}>Send for Maintenance</button>
+					<button className='mx-1 nav-item active bg-warning btn' onClick={() => setTask('Error')}>Add Comment</button>
 					
 				</div>
 			</nav>
@@ -49,6 +51,9 @@ const Admin = ({ API_URL }) => {
 				}
 				else if(task === "Under"){
 				    return <UnderMaintenance API_URL={API_URL}/>
+				}
+				else if(task === "Error"){
+				    return <AddError API_URL={API_URL}/>
 				}
 				else return <TakeRent API_URL={API_URL} setTask={setTask} />;
 			})()}
