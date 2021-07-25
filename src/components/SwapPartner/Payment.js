@@ -51,6 +51,14 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 		console.log(swap);
 	};
 
+	const secondphase = dt => {
+		if(dt[3]== "1" && dt[6]=="7" && dt[8]=="2"){
+			if(dt[9]=="5" || dt[9]=="6" || dt[9]=="7" || dt[9]=="8")
+			return true;
+		}
+		return false;
+	}
+
 	const pay = async () => {
 		updateRider();
 		updateBattery();
@@ -103,7 +111,12 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 									<div>
 										<span className='dollar'>₹</span>
 										<span className='amount'>
-											{amount}
+											{(() => {
+												if (secondphase(rider.latestRent)) {
+													return 0;
+												}
+												else return amount;
+											})()}
 										</span>
 									</div>
 								</div>
