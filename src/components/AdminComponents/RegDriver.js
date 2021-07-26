@@ -5,6 +5,7 @@ import React, {useState, useEffect} from 'react';
 const RegDriver = ({ API_URL }) => {
 
 	const [allRiders, setAllRiders] = useState([])
+	const [allVehicles, setAllVehicles] = useState([])
 
 	let absent = {
 		name: "Not assigned",
@@ -29,6 +30,10 @@ const RegDriver = ({ API_URL }) => {
 			.then((item) => item.json())
 			.then((items) => setAllRiders(items));
 		console.log("object")
+
+		fetch(`${API_URL}/vehicles`)
+			.then((item) => item.json())
+			.then((items) => setAllVehicles(items));
 	}, [API_URL, rider]);
 	
 	const checkSoc = charge => {
@@ -124,7 +129,7 @@ const RegDriver = ({ API_URL }) => {
 				setRider(absent)
 			else
 				setRider(vehicle);
-			console.log(rider);
+			console.log(vehicle);
 		});
 	}
 	const remove = () => {
@@ -169,30 +174,16 @@ const RegDriver = ({ API_URL }) => {
 					<div className='col-12'>
 						<select className='form-select' id='sId' onChange={(e)=>riderName(e.target.value)}>
 							<option defaultValue value='0'>Scooter Number</option>
-							<option value='24'>Scooter No. 24</option>
-							<option value='25'>Scooter No. 25</option>
-							<option value='26'>Scooter No. 26</option>
-							<option value='27'>Scooter No. 27</option>
-							<option value='28'>Scooter No. 28</option>
-							<option value='29'>Scooter No. 29</option>
-							<option value='30'>Scooter No. 30</option>
-							<option value='31'>Scooter No. 31</option>
-							<option value='32'>Scooter No. 32</option>
-							<option value='33'>Scooter No. 33</option>
-							<option value='34'>Scooter No. 34</option>
-							<option value='35'>Scooter No. 35</option>
-							<option value='36'>Scooter No. 36</option>
-							<option value='37'>Scooter No. 37</option>
-							<option value='38'>Scooter No. 38</option>
-							<option value='39'>Scooter No. 39</option>
-							<option value='40'>Scooter No. 40</option>
-							<option value='41'>Scooter No. 41</option>
-							<option value='42'>Scooter No. 42</option>
-							<option value='43'>Scooter No. 43</option>
-							<option value='44'>Scooter No. 44</option>
-							<option value='46'>Scooter No. 46</option>
-							<option value='47'>Scooter No. 47</option>
-							<option value='48'>Scooter No. 48</option>
+							{allVehicles.map((veh, index) => {
+                                if (veh.status !== 'Under Maintenance')
+                                    return (
+                                        <option value={veh.scooterId} key={index}>
+                                            Scooter No.
+                                            {veh.scooterId}
+                                        </option>
+                                    );
+                                return <option key={index} style={{ display: 'none' }}></option>;
+                            })}
 						</select>
 					</div>
 					
@@ -251,23 +242,24 @@ const RegDriver = ({ API_URL }) => {
 							</>)
 						}
 						else return (
-								<>
-									<div className='col-12'>
-										Current Rider Name :  <span>{rider.name}</span> <br/>
-										Current Rider Contact:  <span>{rider.number}</span> <br/>
-										Current Battery Security:  <span>{rider.batterySecurity}</span> <br/>
-										Current Scooter Security:  <span>{rider.scooterSecurity}</span> <br/>
-									</div>
-									<div className='col-12'>
-										<input className='form-control' id='vehicleSec' placeholder='Vehicle Security Returned' onChange={e=> setVehSec(e.target.value)}/>
-									</div>
-									<div className='col-12'>
-										<input className='form-control' id='batterySec' placeholder='Battery Security Returned' onChange={e=> setBatSec(e.target.value)}/>
-									</div>
-									<button type='button' className='btn btn-primary' onClick={() => confirm(remove)}>
-										Remove
-									</button>
-								</>)
+							<>
+								<div className='col-12'>
+									Current Rider Name :  <span>{rider.name}</span> <br/>
+									Current Rider Contact:  <span>{rider.number}</span> <br/>
+									Current Battery Security:  <span>{rider.batterySecurity}</span> <br/>
+									Current Scooter Security:  <span>{rider.scooterSecurity}</span> <br/>
+								</div>
+								<div className='col-12'>
+									<input className='form-control' id='vehicleSec' placeholder='Vehicle Security Returned' onChange={e=> setVehSec(e.target.value)}/>
+								</div>
+								<div className='col-12'>
+									<input className='form-control' id='batterySec' placeholder='Battery Security Returned' onChange={e=> setBatSec(e.target.value)}/>
+								</div>
+								<button type='button' className='btn btn-primary' onClick={() => confirm(remove)}>
+									Remove
+								</button>
+							</>
+						)
 					})()}
 				</form>
 			</div>
