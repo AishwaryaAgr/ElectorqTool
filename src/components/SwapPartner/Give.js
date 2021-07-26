@@ -13,10 +13,16 @@ const Give = ({
 }) => {
 	const [action, setAction] = useState(true);
 	const [batteries, setBatteries] = useState([]);
+	const [allVehicles, setAllVehicles] = useState([])
+
 	useEffect(() => {
 		fetch(`${API_URL}/items`)
 			.then((item) => item.json())
 			.then((items) => setBatteries(items));
+
+		fetch(`${API_URL}/vehicles`)
+			.then((item) => item.json())
+			.then((items) => setAllVehicles(items));
 	}, [API_URL, action]);
 
 	const riderName = (id) => {
@@ -140,30 +146,16 @@ const Give = ({
 							<option defaultValue value='0'>
 								Scooter Number
 							</option>
-							<option value='24'>Scooter No. 24</option>
-							<option value='25'>Scooter No. 25</option>
-							<option value='26'>Scooter No. 26</option>
-							<option value='27'>Scooter No. 27</option>
-							<option value='28'>Scooter No. 28</option>
-							<option value='29'>Scooter No. 29</option>
-							<option value='30'>Scooter No. 30</option>
-							<option value='31'>Scooter No. 31</option>
-							<option value='32'>Scooter No. 32</option>
-							<option value='33'>Scooter No. 33</option>
-							<option value='34'>Scooter No. 34</option>
-							<option value='35'>Scooter No. 35</option>
-							<option value='36'>Scooter No. 36</option>
-							<option value='37'>Scooter No. 37</option>
-							<option value='38'>Scooter No. 38</option>
-							<option value='39'>Scooter No. 39</option>
-							<option value='40'>Scooter No. 40</option>
-							<option value='41'>Scooter No. 41</option>
-							<option value='42'>Scooter No. 42</option>
-							<option value='43'>Scooter No. 43</option>
-							<option value='44'>Scooter No. 44</option>
-							<option value='46'>Scooter No. 46</option>
-							<option value='47'>Scooter No. 47</option>
-							<option value='48'>Scooter No. 48</option>
+							{allVehicles.map((veh, index) => {
+                                if (veh.status === 'Assigned')
+                                    return (
+                                        <option value={veh.scooterId} key={index}>
+                                            Scooter No.
+                                            {veh.scooterId}
+                                        </option>
+                                    );
+                                return <option key={index} style={{ display: 'none' }}></option>;
+                            })}
 						</select>
 					</div>
 					<div className='col-12'>
