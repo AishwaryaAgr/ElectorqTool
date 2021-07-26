@@ -78,7 +78,7 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 							<div>
 								<img
 									className='img'
-									src='https://pbs.twimg.com/profile_images/1349701223029456902/VzzfnhLx_400x400.jpg'
+									src='https://th.bing.com/th/id/OIP.rVggrpUvs-YAUExsD7c-EAHaHa?w=182&h=183&c=7&o=5&pid=1.7'
 									alt=''
 									width='60'
 									height='80px'
