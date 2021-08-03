@@ -93,9 +93,11 @@ const Give = ({
 		if (!checkSoc(charge) || charge === "")
 			return alert("Charge Must be between 0 and 50");
 		const station = document.querySelector("#station").value;
+		console.log(rider.number);
 		fetch(`${API_URL}/items/${rider.number}`)
 			.then((item) => item.json())
 			.then((item) => {
+				
 				if (Number(item.batteryCharge) < Number(charge))
 					return alert("Battery Charge cannot increase");
 				let sett = { ...item, soc: charge, newstate: station };
