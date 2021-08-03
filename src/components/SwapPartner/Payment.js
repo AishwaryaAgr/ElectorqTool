@@ -111,12 +111,7 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 									<div>
 										<span className='dollar'>₹</span>
 										<span className='amount'>
-											{(() => {
-												if (secondphase(rider.latestRent)) {
-													return 0;
-												}
-												else return amount;
-											})()}
+											{amount}
 										</span>
 									</div>
 								</div>
