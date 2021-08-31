@@ -3,25 +3,37 @@
 import React, { useState, useEffect } from 'react';
 import '../../App.css';
 const TakeRent = ({ API_URL, setTask }) => {
-	const [method, setMethod] = useState('Cash');
+
+	let absent = {
+		name: "Not Assigned",
+		number: ""
+	}
+
+	//State Variables with initailization
+	const [method, setMethod] = useState('Cash'); // Default payment method is Cash
 	const [Id, setId] = useState('');
 	const [first, setFirst] = useState('');
 	const [days, setDays] = useState('');
 	const [allVehicles, setAllVehicles] = useState([])
+	const [rider, setRider] = useState(absent)
 
+	// INITIALIZATION
 	useEffect(() => {
+		// Fetch all vehicles from the database
 		fetch(`${API_URL}/vehicles`)
 			.then((item) => item.json())
 			.then((items) => setAllVehicles(items));
 	}, [API_URL]);
 
+	// Add Rent entry in DB
 	const addRent = async (vehicle, transactionId, amount) => {
+		// Object Schema for rent
 		const rent = {
-			scooterId: vehicle.scooterId,
-			name: vehicle.currentUserName,
-			number: vehicle.currentUserNumber,
-			amount,
-			mode: transactionId,
+			scooterId: vehicle.scooterId, // scooterID
+			name: vehicle.currentUserName, // name of rider
+			number: vehicle.currentUserNumber, // number of rider
+			amount, // the total kms that is being paid fot
+			mode: transactionId, // method of payment
 		};
 		await fetch(`${API_URL}/rents`, {
 			method: 'POST',
@@ -29,11 +41,12 @@ const TakeRent = ({ API_URL, setTask }) => {
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => alert('Rent Paid'));
 
-		fetch(`${API_URL}/riders/rents`, {
+		fetch(`${API_URL}/riders/rents`, { // Update Last rent date in rider DB
 			method: 'PUT',
 			body: JSON.stringify({ id: vehicle.scooterId }),
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => {
+			// Reset form fields
 			setDays('');
 			setFirst('');
 			setId('');
@@ -41,6 +54,7 @@ const TakeRent = ({ API_URL, setTask }) => {
 		});
 	};
 
+	// Get Vehicle associated to the scooter Id that has been entered
 	const getVehicle = async (scooter, transactionId, amount) => {
 		fetch(`${API_URL}/vehicles/${scooter}`)
 			.then((item) => item.json())
@@ -48,12 +62,14 @@ const TakeRent = ({ API_URL, setTask }) => {
 				if (vehicle == null) {
 					return alert('Check Scooter Id');
 				}
-				addRent(vehicle, transactionId, amount);
+				
+				addRent(vehicle, transactionId, amount); // If such a battery exists the process is continued
 			});
 	};
 
+	// Container function with checks to mark paid rent
 	const takeRent = async () => {
-		if(days === '')
+		if(days === '') // if the number of days for payment are empty the process would stop
 			return alert("Don't cheat");
 		const scooter = document.querySelector('#sId').value;
 		const amount = document.querySelector('#amount').value;
@@ -61,12 +77,13 @@ const TakeRent = ({ API_URL, setTask }) => {
 		if (method === 'online') {
 			transactionId = Id;
 		}
-		await getVehicle(scooter, transactionId, amount);
+		await getVehicle(scooter, transactionId, amount); 
 
 		document.querySelector('#sId').value = '0';
 		document.querySelector('#amount').value = '';
 	};
 
+	// Calculating the number of days between two dates
 	const totalDays = (start) => {
 		let mon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
 
@@ -75,14 +92,16 @@ const TakeRent = ({ API_URL, setTask }) => {
 		return dayss;
 	};
 
+	// Fetching rider info associated to the provided scooter
 	const riderName = (id) => {
 		// console.log(id);
 		fetch(`${API_URL}/riders/scooter/${id}`)
 			.then((vehicle) => vehicle.json())
 			.then((vehicle) => {
-				if (vehicle === null || vehicle.scooterId === 'Not Assigned') {
+				if (vehicle === null || vehicle.scooterId === 'Not Assigned') { // If no such rider exists reset the variables and forms
 					setFirst('');
 					setDays('');
+					setRider(absent)
 					return alert('Scooter Not Assigned');
 				} else {
 					let start = new Date(vehicle.dateAlloted);
@@ -92,21 +111,26 @@ const TakeRent = ({ API_URL, setTask }) => {
 					let sday = totalDays(start);
 					let mday = totalDays(mid);
 					let eday = totalDays(end);
-					alert(vehicle.name);
+					// alert(vehicle.name)
 					if (sday === mday) {
 						setFirst(' {First Transaction}');
 					} else {
 						setFirst('');
 					}
-					setDays(eday - mday);
+					setDays(eday - mday); // else find the number of days in between
+					setRider(vehicle);
 				}
 			});
 	};
 
+	// Confirmation Alert
 	const confirm = (cb) => {
 		const confirmBox = window.confirm('Do you want to continue');
 		if (confirmBox === true) cb();
 	};
+
+	// Work Flow
+	// riderName -> confirm -> takeRent -> getVehicle -> addRent
 
 	return (
 		<>
@@ -123,8 +147,9 @@ const TakeRent = ({ API_URL, setTask }) => {
 											id='sId'
 											onChange={(e) => riderName(e.target.value)}>
 											<option defaultValue value='0'>Scooter Number</option>
+											{/* Displaying all vehicles in the DB */}
 											{allVehicles.map((veh, index) => {
-												if (veh.status !== 'Under Maintenance')
+												if (veh.status !== 'Under Maintenance') // Filtering out of service vehicles
 													return (
 														<option value={veh.scooterId} key={index}>
 															Scooter No.
@@ -138,10 +163,31 @@ const TakeRent = ({ API_URL, setTask }) => {
 								</div>
 							</div>
 						</div>
+						{(() => {
+							if (rider.name !== "Not Assigned") {
+								return (
+									<div className='col-12' style={{
+										alignItems: "center",
+										justifyContent: "center",
+										width: "100%",
+										display: "flex",
+										flexDirection: "column"
+									}}>
+										<div>
+											Rider Name : <span>{rider.name}</span>
+										</div>
+										<div>
+											Rider Contact: <span>{rider.number}</span>{" "}
+										</div>
+									</div>
+								);
+							}
+						})()}
 						<div className='py-2 px-3'>
 							<div className='second pl-2 d-flex py-2'>
 								<div className='border-left pl-2  mx-3'>
-									<span className='head'>Amount {first}</span>
+									{/* First here represents where it is the first payment by the selected rider so that addition compensations can be selected */}
+									<span className='head'>Amount {first}</span> 
 									<div className='d-flex'>
 										<span className='dollar'>₹</span>
 										<input
