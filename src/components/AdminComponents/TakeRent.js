@@ -92,7 +92,7 @@ const TakeRent = ({ API_URL, setTask }) => {
 					let sday = totalDays(start);
 					let mday = totalDays(mid);
 					let eday = totalDays(end);
-
+					alert(vehicle.name);
 					if (sday === mday) {
 						setFirst(' {First Transaction}');
 					} else {
