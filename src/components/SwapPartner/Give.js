@@ -117,7 +117,8 @@ const Give = ({
 	};
 	const confirm = (cb) => {
 		const confirmBox = window.confirm("Do you want to continue");
-		if (confirmBox === true) cb();
+		if (confirmBox === true) 
+			return cb();
 	};
 
 	return (
