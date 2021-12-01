@@ -40,7 +40,7 @@ const UnderMaintenance = ({ API_URL }) => {
     }
 
     const underVehicle = id => {
-        fetch(`${API_URL}/vehicles/unallot/${id}`, {
+        fetch(`${API_URL}/vehicles/unallot/${id}/0`, {
 			method: 'PUT',
 			body: JSON.stringify({status: "Under Maintenance"}),
 			headers: { 'Content-Type': 'application/json' },

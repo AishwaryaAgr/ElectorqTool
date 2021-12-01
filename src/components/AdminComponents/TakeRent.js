@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import '../../App.css';
-const TakeRent = ({ API_URL, setTask }) => {
+const TakeRent = ({ API_URL, setTask , password}) => {
 
 	let absent = {
 		name: "Not Assigned",
@@ -16,24 +16,36 @@ const TakeRent = ({ API_URL, setTask }) => {
 	const [days, setDays] = useState('');
 	const [allVehicles, setAllVehicles] = useState([])
 	const [rider, setRider] = useState(absent)
+	const [amount, setAmount] = useState(0)
 
+	let url = API_URL
 	// INITIALIZATION
 	useEffect(() => {
 		// Fetch all vehicles from the database
-		fetch(`${API_URL}/vehicles`)
+		fetch(`${url}/vehicles`)
 			.then((item) => item.json())
-			.then((items) => setAllVehicles(items));
-	}, [API_URL]);
+			.then((items) => {
+				if(items.length === 0)
+					return console.log("empty");
+				items.sort((a,b)=> a.scooterId - b.scooterId);
+				if(password === '0')
+					return setAllVehicles(items);
+				console.log(items)
+				const VpVehicles = items.filter(item => item.VP === Number(password))
+				setAllVehicles(VpVehicles)
+			});
+	}, [url, password]);
 
 	// Add Rent entry in DB
-	const addRent = async (vehicle, transactionId, amount) => {
+	const addRent = async (vehicle, transactionId) => {
 		// Object Schema for rent
 		const rent = {
 			scooterId: vehicle.scooterId, // scooterID
 			name: vehicle.currentUserName, // name of rider
 			number: vehicle.currentUserNumber, // number of rider
 			amount, // the total kms that is being paid fot
-			mode: transactionId, // method of payment
+			mode: transactionId,
+			VP: password // method of payment
 		};
 		await fetch(`${API_URL}/rents`, {
 			method: 'POST',
@@ -55,7 +67,7 @@ const TakeRent = ({ API_URL, setTask }) => {
 	};
 
 	// Get Vehicle associated to the scooter Id that has been entered
-	const getVehicle = async (scooter, transactionId, amount) => {
+	const getVehicle = async (scooter, transactionId) => {
 		fetch(`${API_URL}/vehicles/${scooter}`)
 			.then((item) => item.json())
 			.then((vehicle) => {
@@ -63,24 +75,21 @@ const TakeRent = ({ API_URL, setTask }) => {
 					return alert('Check Scooter Id');
 				}
 				
-				addRent(vehicle, transactionId, amount); // If such a battery exists the process is continued
+				addRent(vehicle, transactionId); // If such a battery exists the process is continued
 			});
 	};
 
 	// Container function with checks to mark paid rent
 	const takeRent = async () => {
-		if(days === '') // if the number of days for payment are empty the process would stop
-			return alert("Don't cheat");
 		const scooter = document.querySelector('#sId').value;
-		const amount = document.querySelector('#amount').value;
 		let transactionId = 'Cash';
 		if (method === 'online') {
 			transactionId = Id;
 		}
-		await getVehicle(scooter, transactionId, amount); 
+		await getVehicle(scooter, transactionId); 
 
 		document.querySelector('#sId').value = '0';
-		document.querySelector('#amount').value = '';
+		document.querySelector('.amount').value = '';
 	};
 
 	// Calculating the number of days between two dates
@@ -88,9 +97,19 @@ const TakeRent = ({ API_URL, setTask }) => {
 		let mon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
 
 		let dayss = (start.getFullYear() - 2021) * 365 + mon[Number(start.getMonth())] + start.getDate();
-		let minutess = dayss * 60 * 24 + start.getHours() * 60 + start.getMinutes();
+		// let minutess = dayss * 60 * 24 + start.getHours() * 60 + start.getMinutes();
 		return dayss;
 	};
+
+	const totalDaysLeft = mid => {
+		let mon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+
+		let dayss = totalDays(mid);
+		let nextDate = (mid.getFullYear() - 2021 + Math.floor((mid.getMonth()+1)/12) ) * 365 + mon[(Number(mid.getMonth()+1)%12)];
+		console.log(dayss);
+		console.log(nextDate);
+		return nextDate - dayss + 1;
+	}
 
 	// Fetching rider info associated to the provided scooter
 	const riderName = (id) => {
@@ -101,23 +120,22 @@ const TakeRent = ({ API_URL, setTask }) => {
 				if (vehicle === null || vehicle.scooterId === 'Not Assigned') { // If no such rider exists reset the variables and forms
 					setFirst('');
 					setDays('');
-					setRider(absent)
+					setRider(absent);
+					setAmount(0)
 					return alert('Scooter Not Assigned');
 				} else {
 					let start = new Date(vehicle.dateAlloted);
-					let mid = new Date(vehicle.latestRent);
-					let end = new Date();
-
-					let sday = totalDays(start);
-					let mday = totalDays(mid);
-					let eday = totalDays(end);
 					// alert(vehicle.name)
-					if (sday === mday) {
+					if (vehicle.latestRent === null || vehicle.latestRent <= vehicle.dateAlloted) {
+						if(vehicle.latestRent != null)
+							start = vehicle.latestRent
+						let eday = Math.min(1300,Number(totalDaysLeft(start)*44));
 						setFirst(' {First Transaction}');
+						setAmount(eday)
 					} else {
 						setFirst('');
+						setAmount(1300);
 					}
-					setDays(eday - mday); // else find the number of days in between
 					setRider(vehicle);
 				}
 			});
@@ -183,10 +201,10 @@ const TakeRent = ({ API_URL, setTask }) => {
 								);
 							}
 						})()}
-						<div className='py-2 px-3'>
+						{/* <div className='py-2 px-3'>
 							<div className='second pl-2 d-flex py-2'>
 								<div className='border-left pl-2  mx-3'>
-									{/* First here represents where it is the first payment by the selected rider so that addition compensations can be selected */}
+									First here represents where it is the first payment by the selected rider so that addition compensations can be selected
 									<span className='head'>Amount {first}</span> 
 									<div className='d-flex'>
 										<span className='dollar'>₹</span>
@@ -200,7 +218,9 @@ const TakeRent = ({ API_URL, setTask }) => {
 									</div>
 								</div>
 							</div>
-						</div>
+						</div> 
+						*/}
+
 						<div className='py-2 px-3'>
 							<div className='first pl-2 d-flex py-2'>
 								<div className='form-check'>
@@ -217,8 +237,8 @@ const TakeRent = ({ API_URL, setTask }) => {
 								<div className='border-left pl-2'>
 									<span className='head'>Take Cash</span>
 									<div>
-										<span className='dollar'>For </span>
-										<span className='amount'>{days} Days</span>
+										<span className='dollar'>Amount </span>
+										<span className='amount'><span className='dollar'>₹</span>{amount}</span>
 									</div>
 								</div>
 							</div>
@@ -238,7 +258,6 @@ const TakeRent = ({ API_URL, setTask }) => {
 								<div className='border-left pl-2'>
 									<span className='head'>Pay Online</span>
 									<div className='d-flex'>
-										<span className='dollar'>₹</span>
 										<input
 											type='text'
 											name='text'

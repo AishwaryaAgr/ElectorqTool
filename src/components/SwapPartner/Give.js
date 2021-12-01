@@ -18,11 +18,21 @@ const Give = ({
 	useEffect(() => {
 		fetch(`${API_URL}/items`)
 			.then((item) => item.json())
-			.then((items) => setBatteries(items));
+			.then((items) => {
+				if(items.length === 0)
+					return console.log("empty");
+				items.sort((a,b)=> a.batteryId - b.batteryId);
+				setBatteries(items)
+			});
 
 		fetch(`${API_URL}/vehicles`)
 			.then((item) => item.json())
-			.then((items) => setAllVehicles(items));
+			.then((items) => {
+				if(items.length === 0)
+					return console.log("empty");
+				items.sort((a,b)=> a.scooterId - b.scooterId);
+				return setAllVehicles(items)
+			});
 	}, [API_URL, action]);
 
 	const riderName = (id) => {
@@ -229,6 +239,9 @@ const Give = ({
 								Saket
 							</option>
 							<option value='MalviyaNagar'>MalviyaNagar</option>
+							<option defaultValue value='SaketCourt'>
+								Saket Court
+							</option>
 						</select>
 					</div>
 					<div className='col-12'>

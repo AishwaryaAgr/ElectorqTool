@@ -15,7 +15,9 @@ function App() {
 
 	const check = () => {
 		const entry = document.querySelector('#pass').value;
-		if (entry === 'El3Torq') setPassword('Admin');
+		if (entry === 'El3Torq') setPassword('0');
+		if (entry === 'Vehicl3') setPassword('1');
+		if (entry === 'Scoot3r') setPassword('2');
 		else if (entry === p1 || entry === p2 || entry === p3 || entry === p4) setPassword('Swap');
 		else setIncorrect(true);
 	};
@@ -62,7 +64,7 @@ function App() {
 						</div>
 					);
 
-				if (password === 'Admin') return <Admin API_URL={API_URL} />;
+				if (password === '0' || password === '1' || password === '2' ) return <Admin API_URL={API_URL} password={password}/>;
 				if (password === 'Swap') return <Swap API_URL={API_URL} />;
 			})()}
 		</>

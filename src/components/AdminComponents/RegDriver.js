@@ -2,7 +2,7 @@
 
 import React, {useState, useEffect} from 'react';
 
-const RegDriver = ({ API_URL }) => {
+const RegDriver = ({ API_URL , password}) => {
 
 	const [allRiders, setAllRiders] = useState([])
 	const [allVehicles, setAllVehicles] = useState([])
@@ -24,17 +24,34 @@ const RegDriver = ({ API_URL }) => {
 	const [entrybatSecurity, setentrybatSecurity] = useState("")
 	const [entrysoc, setentrysoc] = useState("")
 	const [entrystation, setentrystation] = useState("Saket")
+	const [entryBaazPercent, setEntryBaazPercent] = useState(0)
+	const [rent, setRent] = useState(0)
+	const [refund, setRefund] = useState(0);
+	const [reason, setReason] = useState("");
 
 	useEffect(() => {
 		fetch(`${API_URL}/items`)
 			.then((item) => item.json())
-			.then((items) => setAllRiders(items));
+			.then((items) => {
+				if(items.length === 0)
+					return console.log("empty");
+				items.sort((a,b)=> a.batteryId - b.batteryId);
+				setAllRiders(items)
+			});
 		console.log("object")
 
 		fetch(`${API_URL}/vehicles`)
 			.then((item) => item.json())
-			.then((items) => setAllVehicles(items));
-	}, [API_URL, rider]);
+			.then((items) => {
+				if(items.length === 0)
+					return console.log("empty");
+				items.sort((a,b)=> a.scooterId - b.scooterId);
+				if(password === '0')
+					return setAllVehicles(items);
+				const VpVehicles = items.filter(item => item.VP === Number(password))
+				setAllVehicles(VpVehicles)
+			});
+	}, [API_URL, rider, password]);
 	
 	const checkSoc = charge => {
 		if(Number(charge)<0 || Number(charge)>50)
@@ -60,13 +77,90 @@ const RegDriver = ({ API_URL }) => {
 		}).then(() => alert('Removed Battery'));
 	}
 	const removeVehicle = async (scooterId) => {
-		fetch(`${API_URL}/vehicles/unallot/${scooterId}`, {
+		fetch(`${API_URL}/vehicles/unallot/${scooterId}/0`, {
 			method: 'PUT',
 			body: JSON.stringify({status: "Not Assigned"}),
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => alert('Rider Removed'));
 
 	}
+
+	const postAdd = async (scooter) => {
+		const entry = {
+			scooterId: scooter, // scooterID
+			userName: entryRider.name, // name of rider
+			userNumber: entryRider.number, // number of rider
+			batterySecurity: 650,
+			scooterSecurity: 1350,
+			vehiclePartner: password, // the total kms that is being paid fot
+			reason: "New Rider Addition", // method of payment
+		};
+		await fetch(`${API_URL}/inter`, {
+			method: 'POST',
+			body: JSON.stringify(entry),
+			headers: { 'Content-Type': 'application/json' },
+		}).then(() => console.log('Added'));
+	}
+
+	const postRemove = async () => {
+		const entry = {
+			scooterId: rider.scooterId, // scooterID
+			userName: rider.name, // name of rider
+			userNumber: rider.number, // number of rider
+			batterySecurity: rider.batterySecurity,
+			scooterSecurity: Number(rider.scooterSecurity) - rent ,
+			vehiclePartner: password, // the total kms that is being paid fot
+			reason, // method of payment
+		};
+		await fetch(`${API_URL}/inter`, {
+			method: 'POST',
+			body: JSON.stringify(entry),
+			headers: { 'Content-Type': 'application/json' },
+		}).then(() => console.log('Removed'));
+	}
+
+	const postSecurity1 = async (scooter) => {
+        const entry = {
+			scooterId: scooter, // scooterID
+			userName: entryRider.name, // name of rider
+			userNumber: entryRider.number, // number of rider
+			amount: 1350, // the total kms that is being paid fot
+			action: 1, // method of payment
+            event: "New Rider Registration",
+            vehiclePartner: password,
+            batteryAmount: 650
+		};
+		await fetch(`${API_URL}/security`, {
+			method: 'POST',
+			body: JSON.stringify(entry),
+			headers: { 'Content-Type': 'application/json' },
+		}).then(() => {
+            return console.log('Security Recharged');
+        });
+    }
+
+	const postSecurity2 = async () => {
+		let amountTemp = Math.min(rent,Number(rider.scooterSecurity));
+		let batteryAmountTemp = Math.max(0,rent-Number(rider.scooterSecurity));
+
+        const entry = {
+			scooterId: rider.scooterId, // scooterID
+			userName: rider.name, // name of rider
+			userNumber: rider.number, // number of rider
+			amount: Number(amountTemp), // the total kms that is being paid fot
+			action: 0, // method of payment
+            event: "Rider Removal Penality",
+            vehiclePartner: password,
+            batteryAmount: Number(batteryAmountTemp)
+		};
+		await fetch(`${API_URL}/security`, {
+			method: 'POST',
+			body: JSON.stringify(entry),
+			headers: { 'Content-Type': 'application/json' },
+		}).then(() => {
+            return console.log('Security Recharged');
+        });
+    }
 
 	const assignVehicle = async (name, number,scooterId) => {
 		fetch(`${API_URL}/vehicles/allot/${scooterId}`, {
@@ -78,14 +172,15 @@ const RegDriver = ({ API_URL }) => {
 	}
 
 	const addRider = async (scooterId) => {
+		let stayAmount = (Number(entryBaazPercent)*Number(entryvehSecurity))/100;
 		fetch(`${API_URL}/riders/add`, {
 			method: 'PUT',
 			body: JSON.stringify({
 				scooterId,
 				number: entryRider.number,
 				batteryId: entrybatId,
-				batterySecurity: entrybatSecurity,
-				scooterSecurity: entryvehSecurity
+				batterySecurity: Number(entrybatSecurity)+ Number(stayAmount),
+				scooterSecurity: Number(entryvehSecurity) - Number(stayAmount)
 			}),
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => console.log('Rider Assigned'));
@@ -111,15 +206,86 @@ const RegDriver = ({ API_URL }) => {
 		if(entryRider.scooterId !== "Not Assigned" ||  entryRider.batteryId !== "Not Assigned")
 			return alert("Rider already has a battery/scooter")
 		if(!checkSoc(entrysoc)) return alert("Charge Must be between 0 and 50")
+		if(entryBaazPercent > 100) return alert("Check Baaz Percent")
 		await assignVehicle(entryRider.name, entryRider.number,scooter);
 		addRider(scooter);
 		addBattery();
+		postSecurity1(scooter);
+		postAdd(scooter);
 		document.querySelector('#sId').value = "0";
 		setRider(absent);
 		setentryRider(absent);
-		entryFlag(true);
+		setentryFlag(true);
+		setEntryBaazPercent(0);
 		
 	};
+
+	const addRent = async () => {
+		// Object Schema for rent
+		const rentJSON = {
+			scooterId: rider.scooterId, // scooterID
+			name: rider.name, // name of rider
+			number: rider.number, // number of rider
+			amount: rent, // the total kms that is being paid fot
+			mode: "Security Deduction",
+			VP: password // method of payment
+		};
+		await fetch(`${API_URL}/rents`, {
+			method: 'POST',
+			body: JSON.stringify(rentJSON),
+			headers: { 'Content-Type': 'application/json' },
+		}).then(() => console.log('Rent Paid'));
+	};
+
+	const currentMinus = borde => {
+		const border = new Date(borde)
+		// console.log(border)
+		let mon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+		
+		let dayss = (border.getFullYear() - 2021) * 365 + mon[Number(border.getMonth())] + border.getDate();
+		// let minutess = dayss * 60 * 24 + start.getHours() * 60 + start.getMinutes();
+		return dayss;
+	}
+	
+	const nextMinus = borde => {
+		const border = new Date(borde)
+		let mon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+		let nextDate = (border.getFullYear() - 2021 + Math.floor((border.getMonth()+1)/12) ) * 365 + mon[(Number(border.getMonth()+1)%12)];
+		return nextDate;
+	}
+
+	const calculation = (driver, penality) => {
+		let current = new Date();
+		let refundAmount =0;
+		if(driver.latestRent === null || driver.latestRent <= driver.dateAlloted){
+			let border = driver.dateAlloted;
+			if(driver.latestRent !== null){
+				border = driver.latestRent;
+			}
+			// console.log(current)
+			let rentPending = currentMinus(current)- currentMinus(border) + penality;
+			setRent(rentPending*44);
+			refundAmount = driver.batterySecurity + driver.scooterSecurity - rentPending*44;
+		}
+		else{
+			let border = driver.latestRent;
+			let dayCurrent = currentMinus(current);
+			let nextBorder = nextMinus(border);
+			let rentPending = penality;
+			rentPending += dayCurrent - nextBorder;
+			setRent(rentPending*44)
+			refundAmount = driver.batterySecurity + driver.scooterSecurity - rentPending*44;
+		}
+		setRefund(refundAmount);
+		if(refundAmount <= driver.scooterSecurity){
+			setVehSec(refundAmount);
+			setBatSec(0);
+		}
+		else{
+			setVehSec(0);
+			setBatSec(driver.batterySecurity - (refundAmount - driver.scooterSecurity));
+		}
+	}
 
 	const riderName = (id) => {
         fetch(`${API_URL}/riders/scooter/${id}`)
@@ -127,8 +293,10 @@ const RegDriver = ({ API_URL }) => {
 		.then(vehicle=>{
 			if(vehicle === null)
 				setRider(absent)
-			else
+			else{
+				calculation(vehicle, 3);
 				setRider(vehicle);
+			}
 			console.log(vehicle);
 		});
 	}
@@ -136,19 +304,25 @@ const RegDriver = ({ API_URL }) => {
 		removeRider();
 		removeVehicle(rider.scooterId);
 		removeBattery();
+		addRent();
+		postRemove();
+		postSecurity2();
 	}
 	const check = () => {
 		fetch(`${API_URL}/riders/one/${entrynum}`)
 		.then(item=> item.json())
 		.then(item => {
-			if(item !==null)
+			if(item !==null && item.scooterId === 'Not Assigned')
 			{
 				setentryFlag(false);
 				setentryRider(item);
 			}
 			else{
 				setentryRider(absent);
-				alert("Incorrect Number")
+				if(item === null)
+					return alert("Incorrect Number")
+				else
+					return alert(`Rider already has Vehicle no ${item.scooterId}`)
 			}
 			return console.log(item);
 		})
@@ -187,14 +361,13 @@ const RegDriver = ({ API_URL }) => {
 						</select>
 					</div>
 					
-					
 					{(() => {
 						if (rider.scooterId === 'Not Assigned') {
 							return (
 							<>
 								<div className='col-12'>
 									<input className='form-control col-9' id='number' placeholder='Rider Contact Number' onChange={e=> {setentryNum(e.target.value); return setentryFlag(true)}}/>
-									<button className="btn-success col-2" type='button' onClick={()=> check()}>Check</button>
+									<button className="btn-success col-4" type='button' onClick={()=> check()}>Check</button>
 								</div>
 								<div className='col-12'>
 									Rider Name :  <span>{entryRider.name}</span> <br/>
@@ -217,8 +390,10 @@ const RegDriver = ({ API_URL }) => {
 										})}
 									</select>
 								</div>
-								<div className='col-12'>
-									<input className='form-control' type="number" placeholder='Vehicle Security Amount' onChange={e=> setentryvehSecurity(e.target.value)}/>
+								<div className='col-12' style={{display: 'flex'}}>
+									<input className='form-control' type="number" placeholder='Vehicle Security' onChange={e=> setentryvehSecurity(e.target.value)}/>
+									<input style={{width: "50%"}} className='form-control' type="number" placeholder='Baaz %' onChange={e=> setEntryBaazPercent(e.target.value)}/>
+									<span className='dollar'>%</span>
 								</div>
 								<div className='col-12'>
 									<input className='form-control' type="number" placeholder='Battery Security Amount' onChange={e=> setentrybatSecurity(e.target.value)}/>
@@ -234,6 +409,9 @@ const RegDriver = ({ API_URL }) => {
 										<option value='MalviyaNagar'>
 											MalviyaNagar
 										</option>
+										<option defaultValue value='SaketCourt'>
+											Saket Court
+										</option>
 									</select>
 								</div>
 								<button type='button' className='btn btn-primary' onClick={() => confirm(register)} disabled= {entryFlag}>
@@ -246,15 +424,38 @@ const RegDriver = ({ API_URL }) => {
 								<div className='col-12'>
 									Current Rider Name :  <span>{rider.name}</span> <br/>
 									Current Rider Contact:  <span>{rider.number}</span> <br/>
-									Current Battery Security:  <span>{rider.batterySecurity}</span> <br/>
-									Current Scooter Security:  <span>{rider.scooterSecurity}</span> <br/>
 								</div>
-								<div className='col-12'>
-									<input className='form-control' id='vehicleSec' placeholder='Vehicle Security Returned' onChange={e=> setVehSec(e.target.value)}/>
-								</div>
-								<div className='col-12'>
-									<input className='form-control' id='batterySec' placeholder='Battery Security Returned' onChange={e=> setBatSec(e.target.value)}/>
-								</div>
+								<b style={{textAlign: "center"}}>
+									Security Amount with VRP:  <span>{rider.scooterSecurity}</span> <br/>
+									Security Amount with Baaz:  <span>{rider.batterySecurity}</span> <br/>
+									Unpaid Rent Amount:  <span>{rent}</span> <br/>
+									Security Refund Amount: <span>{refund}</span> <br/>
+								</b>
+								<input
+									type='radio'
+									value='0'
+									onClick={(e) => calculation(rider, 3)}
+									name='optradio'
+									className='form-check-input dot'
+									defaultChecked
+								/>
+								<p>Apply Standard Fee</p>
+								<input
+									type='radio'
+									value='3'
+									onClick={(e) => calculation(rider,0)}
+									name='optradio'
+									className='form-check-input dot'
+								/>
+								<p> No Standard Fee</p>
+								<input
+									type='text'
+									name='text'
+									className='form-control ml-1'
+									placeholder='Enter Reason for Removal'
+									onChange={(e) => setReason(e.target.value)}
+									value={reason}
+								/>
 								<button type='button' className='btn btn-primary' onClick={() => confirm(remove)}>
 									Remove
 								</button>

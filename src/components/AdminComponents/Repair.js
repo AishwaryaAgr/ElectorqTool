@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 
-const Repair = ({API_URL}) => {
+const Repair = ({API_URL, password}) => {
 
     
     const [allBatteries, setAllBatteries] = useState([])
@@ -31,6 +31,41 @@ const Repair = ({API_URL}) => {
 		return true;
 	}
 
+    const postTransaction = async (rider, vehicle) => {
+        const entry = {
+			scooterId: vehicle.scooterId, // scooterID
+			userName: rider.name, // name of rider
+			userNumber: rider.number, // number of rider
+			batterySecurity: cost,
+			scooterSecurity: 0,
+			vehiclePartner: password, // the total kms that is being paid fot
+			reason: `Maintenance Cost`, // method of payment
+		};
+		await fetch(`${API_URL}/inter`, {
+			method: 'POST',
+			body: JSON.stringify(entry),
+			headers: { 'Content-Type': 'application/json' },
+		}).then(() => console.log('Removed'));
+    }
+
+    const postSecurity = async (rider, vehicle) => {
+        const entry = {
+			scooterId: vehicle.scooterId, // scooterID
+			userName: rider.name, // name of rider
+			userNumber: rider.number, // number of rider
+			amount: cost, // the total kms that is being paid fot
+			action: 0, // method of payment
+            event: `Maintenance Cost of ${desc}`,
+            vehiclePartner: vehicle.VP,
+            batteryAmount: 0
+		};
+		await fetch(`${API_URL}/security`, {
+			method: 'POST',
+			body: JSON.stringify(entry),
+			headers: { 'Content-Type': 'application/json' },
+		}).then(() => postTransaction(rider,vehicle));
+    }
+
     const report = (type,id)=>{
         fetch(`${API_URL}/complaints/repair`, {
 			method: 'POST',
@@ -50,13 +85,30 @@ const Repair = ({API_URL}) => {
         setComponent("-1");
     }
 
-    const repairVehicle = id => {
-        fetch(`${API_URL}/vehicles/unallot/${id}`, {
+    const manageSecurity = async (rider,vehicle)=> {
+        fetch(`${API_URL}/riders/changesecurity`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                number: rider.number,
+                batterySecurity: rider.batterySecurity,
+                scooterSecurity: Number(rider.scooterSecurity - Number(cost)),
+            }),
+            headers: { 'Content-Type': 'application/json' },
+        }).then(() => {
+            return postSecurity(rider,vehicle)});
+    }
+    const repairVehicle = (id, vehicle) => {
+        fetch(`${API_URL}/vehicles/unallot/${id}/0`, {
 			method: 'PUT',
 			body: JSON.stringify({status: "Not Assigned"}),
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => console.log('Changed in Vehicle'));
-        report("vehicle",id)
+        report("vehicle",id);
+        if(vehicle.currentUserNumber !== 0)
+            fetch(`${API_URL}/riders/one/${vehicle.currentUserNumber}`)
+                .then((rider) => rider.json())
+                .then(rider => {
+                return manageSecurity(rider,vehicle)});
     }
 
     const repairBattery = id => {
@@ -74,7 +126,7 @@ const Repair = ({API_URL}) => {
             .then(item=> item.json())
             .then(item =>{
                 if(item.status === "Under Maintenance")
-                    return cb(id);
+                    return cb(id, item);
                 return alert("Item already repaired")
             })
     }
@@ -141,8 +193,8 @@ const Repair = ({API_URL}) => {
                             <div className="col-12" id="battery">
                                 <input className='form-control' id='number' placeholder='New Battery SoC' type="number" onChange={(e)=>setSoc(e.target.value)}/>
                                 <select className='form-select' onChange={e=> setStation(e.target.value)}>
-                                    <option defaultValue value='Saket'>
-											Saket
+                                    <option defaultValue value=''>
+											
 										</option>
 										<option value='MalviyaNagar'>
 											MalviyaNagar

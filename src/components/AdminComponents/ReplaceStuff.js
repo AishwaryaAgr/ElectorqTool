@@ -23,6 +23,7 @@ const ReplaceStuff = ({ API_URL }) => {
 	const [desc, setDesc] = useState('');
 	const [battery, setBattery] = useState(absent);
 	const [reset, setReset] = useState(true);
+	const [maintenance, setMaintenance] = useState('1');
 
 	useEffect(() => {
 		fetch(`${API_URL}/items`)
@@ -34,7 +35,8 @@ const ReplaceStuff = ({ API_URL }) => {
 			.then((item) => item.json())
 			.then((items) => setAllVehicles(items));
 		console.log('object');
-	}, [API_URL]);
+
+	}, [API_URL, reset]);
 
 	const checkSoc = (charge) => {
 		if (Number(charge) < 0 || Number(charge) > 50) return false;
@@ -95,17 +97,26 @@ const ReplaceStuff = ({ API_URL }) => {
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => console.log('Changed in Battery'));
 
+		let status = "Not Assigned"
+		if(maintenance === '1')
+			status = "Under Maintenance"
+			
 		fetch(`${API_URL}/items/replace`, {
 			method: 'PUT',
-			body: JSON.stringify({ id: battery.batteryId, soc: oldSoc }),
+			body: JSON.stringify({ id: battery.batteryId, soc: oldSoc, status: status }),
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => console.log('Changed in Battery'));
 	};
 
 	const changeInVehicle = () => {
-		fetch(`${API_URL}/vehicles/unallot/${rider.scooterId}`, {
+		let num = 0, status = "Not Assigned"
+		if(maintenance === '1'){
+			num = rider.number;
+			status = "Under Maintenance"
+		}
+		fetch(`${API_URL}/vehicles/unallot/${rider.scooterId}/${num}`, {
 			method: 'PUT',
-			body: JSON.stringify({ status: 'Under Maintenance' }),
+			body: JSON.stringify({ status: status }),
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => console.log('Changed in Vehicle'));
 
@@ -142,7 +153,8 @@ const ReplaceStuff = ({ API_URL }) => {
 				if (item.status === 'Under Maintenace') return alert('Vehicle Under Maintenance');
 				changeInVehicle();
 				changeVehicleInRider();
-				report('scooter', rider.scooterId, nTime);
+				if(maintenance === '1')
+					report('scooter', rider.scooterId, nTime);
 				return alert('Vehicle Replacement Successful');
 			});
 	};
@@ -155,7 +167,8 @@ const ReplaceStuff = ({ API_URL }) => {
 				if (item.status === 'Under Maintenace') return alert('Battery Under Maintenance');
 				changeInBattery();
 				changeBatteryInRider();
-				report('battery', rider.batteryId, nTime);
+				if(maintenance === '1')
+					report('battery', rider.batteryId, nTime);
 				return alert('Battery Replacement Successful');
 			});
 	};
@@ -277,10 +290,13 @@ const ReplaceStuff = ({ API_URL }) => {
 						<select className='form-select' onChange={e=> setStation(e.target.value)}>
 							<option defaultValue value='Saket'>
 											Saket
-										</option>
-										<option value='MalviyaNagar'>
-											MalviyaNagar
-										</option>
+							</option>
+							<option value='MalviyaNagar'>
+								MalviyaNagar
+							</option>
+							<option value='Court'>
+								 Court
+							</option>
 						</select>
 					</div>
 					<div className='col-12' id='vehicle'>
@@ -311,7 +327,7 @@ const ReplaceStuff = ({ API_URL }) => {
 							placeholder='Description'
 							onChange={(e) => setDesc(e.target.value)}
 						/>
-					</div>
+					</div><br />
 					<button
 						type='button'
 						className='btn btn-primary'
@@ -319,6 +335,23 @@ const ReplaceStuff = ({ API_URL }) => {
 						disabled={reset === true}>
 						Confirm Replacement
 					</button>
+					<input
+						type='radio'
+						value='1'
+						onClick={(e) => setMaintenance(e.target.value)}
+						name='optradio'
+						className='form-check-input dot'
+						defaultChecked
+					/>
+					<p>Send for maintenance</p>
+					<input
+						type='radio'
+						value='0'
+						onClick={(e) => setMaintenance(e.target.value)}
+						name='optradio'
+						className='form-check-input dot'
+					/>
+					<p> Don't Send for maintenance</p>
 				</form>
 			</div>
 		</>
