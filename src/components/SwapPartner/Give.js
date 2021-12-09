@@ -107,7 +107,8 @@ const Give = ({
 		fetch(`${API_URL}/items/${rider.number}`)
 			.then((item) => item.json())
 			.then((item) => {
-				
+				if(item === null)
+					return alert("Battery Mapping Incorrect inform ElecTorq")
 				if (Number(item.batteryCharge) < Number(charge))
 					return alert("Battery Charge cannot increase");
 				let sett = { ...item, soc: charge, newstate: station };
