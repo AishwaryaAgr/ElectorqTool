@@ -5,7 +5,9 @@ import Payment from "./Payment"
 const Swap = ({API_URL}) => {
     let absent = {
 		name: "Not assigned",
-		number: ""
+		number: 0,
+		pendingSwapPayment: 0,
+		scooterId: 0
 	}
     const [rider, setRider] = useState(absent);
     const [current, setCurrent] = useState({});

@@ -21,7 +21,7 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 		fetch(url, {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
-		}).then(() => setRider(absent));
+		}).then(() => {setRider(absent); return alert("Swap Completed")});
 	};
 
 	const addTransaction = () => {
@@ -47,8 +47,7 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 			method: 'POST',
 			body: JSON.stringify(swap),
 			headers: { 'Content-Type': 'application/json' },
-		}).then(() => alert('Battery Provided'));
-		console.log(swap);
+		}).then(() => console.log('Swap Completed'));
 	};
 
 	const secondphase = dt => {
@@ -60,9 +59,9 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 	}
 
 	const pay = async () => {
+		addTransaction();
 		updateRider();
 		updateBattery();
-		addTransaction();
 	};
 	const confirm = (cb) => {
 		const confirmBox = window.confirm('Do you want to continue');
