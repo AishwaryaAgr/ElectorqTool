@@ -93,7 +93,8 @@ const TakeRent = ({ API_URL, setTask , password}) => {
 	};
 
 	// Calculating the number of days between two dates
-	const totalDays = (start) => {
+	const totalDays = (star) => {
+		let start = new Date(star)
 		let mon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
 
 		let dayss = (start.getFullYear() - 2021) * 365 + mon[Number(start.getMonth())] + start.getDate();
@@ -101,7 +102,8 @@ const TakeRent = ({ API_URL, setTask , password}) => {
 		return dayss;
 	};
 
-	const totalDaysLeft = mid => {
+	const totalDaysLeft = mi => {
+		let mid  = new Date(mi)
 		let mon = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
 
 		let dayss = totalDays(mid);
