@@ -102,8 +102,13 @@ const Give = ({
 		const charge = document.querySelector("#charge").value;
 		if (!checkSoc(charge) || charge === "")
 			return alert("Charge Must be between 0 and 50");
+		let defaulter = [7428719664, 7838227445, 8862959224, 8527286738, 8969611448, 7042824589, 8920743800, 7291948678]
 		const station = document.querySelector("#station").value;
-		console.log(rider.number);
+		// console.log(rider.number);
+		for(let i=0;i<defaulter.length;i++){
+			if(rider.number === defaulter[i])
+				return alert("Please pay the remaining rent first")
+		}
 		fetch(`${API_URL}/items/${rider.number}`)
 			.then((item) => item.json())
 			.then((item) => {
