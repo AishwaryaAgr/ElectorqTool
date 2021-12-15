@@ -84,6 +84,7 @@ const Give = ({
 		const station = document.querySelector("#station").value;
 		if (!checkSoc(charge)) return alert("Charge Must be between 0 and 50");
 		if (bId === "-1") return alert("Add Battery Id");
+		if(station === "default") return alert("Select Swap Station")
 		await riderUpdate(bId);
 		fetch(`${API_URL}/items/bat/${bId}`)
 			.then((item) => item.json())
@@ -95,7 +96,7 @@ const Give = ({
 		document.querySelector("#sId").value = "0";
 		document.querySelector("#bId").value = "-1";
 		document.querySelector("#charge").value = "";
-		document.querySelector("#station").value = "Saket";
+		document.querySelector("#station").value = "default";
 	};
 
 	const getBattery = () => {
@@ -109,6 +110,7 @@ const Give = ({
 			if(rider.number === defaulter[i])
 				return alert("Please pay the remaining rent first")
 		}
+		if(document.querySelector("#station").value === "default") return alert("Select Swap Station")
 		fetch(`${API_URL}/items/${rider.number}`)
 			.then((item) => item.json())
 			.then((item) => {
@@ -120,7 +122,7 @@ const Give = ({
 				setCurrent(sett);
 				document.querySelector("#sId").value = "0";
 				document.querySelector("#charge").value = "";
-				document.querySelector("#station").value = "Station 1";
+				document.querySelector("#station").value = "default";
 				return setTask(true);
 			});
 	};
@@ -241,11 +243,14 @@ const Give = ({
 
 					<div className='col-12'>
 						<select className='form-select' id='station'>
-							<option defaultValue value='Saket'>
+							<option value='default'>
+								Select Swap Station
+							</option>
+							<option value='Saket'>
 								Saket
 							</option>
 							<option value='MalviyaNagar'>MalviyaNagar</option>
-							<option defaultValue value='SaketCourt'>
+							<option value='SaketCourt'>
 								Saket Court
 							</option>
 						</select>
