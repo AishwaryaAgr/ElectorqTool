@@ -50,8 +50,20 @@ const Give = ({
 		return true;
 	};
 
-	const stationData = (bId, newCharge, oldCharge, station) => {
-		return console.log(bId, newCharge, oldCharge, station);
+	const stationData = (bId, newCharge, station) => {
+		const give = {
+			name: rider.name,
+			number: rider.number,
+			batteryId: bId,
+			station,
+			soc: newCharge
+		};
+
+		fetch(`${API_URL}/provide`, {
+			method: 'POST',
+			body: JSON.stringify(give),
+			headers: { 'Content-Type': 'application/json' },
+		}).then(() => console.log('Swap Completed'));
 	};
 
 	const riderUpdate = async (bId) => {
@@ -86,12 +98,8 @@ const Give = ({
 		if (bId === "-1") return alert("Add Battery Id");
 		if(station === "default") return alert("Select Swap Station")
 		await riderUpdate(bId);
-		fetch(`${API_URL}/items/bat/${bId}`)
-			.then((item) => item.json())
-			.then((item) => {
-				stationData(bId, charge, item.batteryCharge, station);
-				batteryUpdate(bId, charge, station);
-			});
+		stationData(bId, charge, station);
+		batteryUpdate(bId, charge, station);
 		setRider(absent);
 		document.querySelector("#sId").value = "0";
 		document.querySelector("#bId").value = "-1";
