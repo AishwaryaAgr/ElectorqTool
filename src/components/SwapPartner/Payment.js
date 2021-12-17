@@ -21,11 +21,11 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 		fetch(url, {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
-		}).then(() => {setRider(absent); return alert("Swap Completed")});
+		}).then(() => {setRider(absent); return alert("Battery Taken")});
 	};
 
 	const addTransaction = () => {
-		let transactionId = 'Cash';
+		let transactionId = method;
 		if (method === 'online') {
 			transactionId = Id;
 		}
@@ -139,6 +139,27 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 											className='form-control ml-1'
 											placeholder='Transaction Id'
 										/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div className='py-2 px-3'>
+							<div className='first pl-2 d-flex py-2'>
+								<div className='form-check'>
+									{' '}
+									<input
+										type='radio'
+										value='Unpaid'
+										onClick={(e) => setMethod(e.target.value)}
+										name='optradio'
+										className='form-check-input mt-1 dot'
+									/>{' '}
+								</div>
+								<div className='border-left pl-2'>
+									<div>
+										<span className='amount'>
+											Unpaid
+										</span>
 									</div>
 								</div>
 							</div>

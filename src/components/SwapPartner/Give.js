@@ -84,7 +84,7 @@ const Give = ({
 				charge,
 			}),
 			headers: { "Content-Type": "application/json" },
-		}).then(() => alert("Battery Updated"));
+		}).then(() => alert("Swap Completed"));
 	};
 
 	const giveBattery = async () => {
