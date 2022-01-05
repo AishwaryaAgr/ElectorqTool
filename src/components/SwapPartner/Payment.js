@@ -6,7 +6,7 @@ import './Payment.css';
 const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTask }) => {
 	const [method, setMethod] = useState('Cash');
 	const [Id, setId] = useState('');
-	const [amount, setAmount] = useState(Math.ceil((Number(current.batteryCharge) - Number(current.soc) + Number(rider.pendingSwapPayment))*0.8))
+	const [amount, setAmount] = useState(Math.ceil((Number(current.batteryCharge) - Number(current.soc) + Number(rider.pendingSwapPayment))))
 
 	const updateRider = () => {
 		fetch(`${API_URL}/riders/removeBattery`, {
