@@ -5,6 +5,8 @@ const Instant = ({API_URL}) => {
     const [description, setDescription] = useState("")
     const [scooter, setScooter] = useState({"scooterId": "0"});
     const [done, setDone] = useState(true)
+    const [date, setDate] = useState('');
+    const [time, setTime] = useState('');
 
     useEffect(() => {
 		// get all vehicles
@@ -22,6 +24,23 @@ const Instant = ({API_URL}) => {
             return alert("Select a Scooter");
         if(description === "")
             return alert("Add Comment")
+
+        let nDate = new Date(date);
+        console.log(nDate.getMonth());
+        let m = nDate.getMonth(),
+            y = nDate.getFullYear(),
+            d = nDate.getDate();
+        let hour = '',
+            min = '';
+        for (let i in time) {
+            if (i < 2) hour += time[i];
+            if (i > 2) min += time[i];
+        }
+        let nTime = new Date(y, m, d, hour, min);
+        if(date === '' || time === '')
+            return alert("Set Issue Date and Time");
+
+
         fetch(`${API_URL}/complaints/`, {
             method: 'POST',
             body: JSON.stringify({
@@ -30,6 +49,7 @@ const Instant = ({API_URL}) => {
                 number: scooter.currentUserNumber,
                 complaintType: "Instant Error",
                 desc: description,
+                date: nTime
             }),
             headers: { 'Content-Type': 'application/json' },
         }).then(() => {
@@ -75,6 +95,22 @@ const Instant = ({API_URL}) => {
                         return <option key={index} style={{ display: 'none' }}></option>;
                     })}
                 </select>
+                <div className='col-12' id='vehicle'>
+						<input
+							type='date'
+							className='form-control'
+							id='number'
+							placeholder='Date when reported'
+							onChange={(e) => setDate(e.target.value)}
+						/>
+						<input
+							type='time'
+							className='form-control'
+							id='number'
+							placeholder='Time when reported'
+							onChange={(e) => setTime(e.target.value)}
+						/>
+					</div>
                 <div className='col-12'>
                         <div className='col-12 input-group'>
                             {/* Description Input */}
