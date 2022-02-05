@@ -30,7 +30,7 @@ const Admin = ({ API_URL , password }) => {
 					// Conditional Rendering based on the value of task
 					if (password === '0') {
 						return (
-							<div className='navbar-nav flex flex-row'>
+							<div className='navbar-nav flex flex-row mx-3'>
 								<button className='mx-1 nav-item active bg-warning btn' disabled={password !== "0"} onClick={() => setTask('Repair')}>Repaired Component</button> {/* Mark a previously out of service component as working */}
 								<button className='mx-1 nav-item active bg-warning btn' disabled={password !== "0"} onClick={() => setTask('Replace')}>Replace Component</button> {/* Replace any component that is currently possessed by a rider */}
 								<button className='mx-1 nav-item active bg-warning btn' disabled={password !== "0"} onClick={() => setTask('Under')}>Send for Maintenance</button> {/* Mark an unoccupied component as down */}
