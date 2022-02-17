@@ -12,13 +12,14 @@ function App() {
 	const p2 = 'st12rms';
 	const p3 = 'st421t';
 	const p4 = 'mpp2tt';
+	const p5 = 'a';
 
 	const check = () => {
 		const entry = document.querySelector('#pass').value;
 		if (entry === 'El3Torq') setPassword('0');
 		if (entry === 'Vehicl3') setPassword('1');
 		if (entry === 'Scoot3r') setPassword('2');
-		else if (entry === p1 || entry === p2 || entry === p3 || entry === p4) setPassword('Swap');
+		else if (entry === p1 || entry === p2 || entry === p3 || entry === p4 || entry === p5) setPassword('Swap');
 		else setIncorrect(true);
 	};
 
