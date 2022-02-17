@@ -13,16 +13,14 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 			method: 'PUT',
 			body: JSON.stringify({ number: rider.number }),
 			headers: { 'Content-Type': 'application/json' },
-		}).then(() => 
-		updateBattery());
-	};
+		}).then(() => setTask(false))};
 
 	const updateBattery = async () => {
 		let url = `${API_URL}/items/${current.batteryId}/take/${current.soc}/${current.newstate}`;
 		fetch(url, {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
-		}).then(() => {setRider(absent); setTask(false); return alert("Battery Taken")});
+		}).then(() => {setRider(absent);  return alert("Battery Taken")});
 	};
 
 	const addTransaction = () => {
@@ -48,7 +46,7 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 			method: 'POST',
 			body: JSON.stringify(swap),
 			headers: { 'Content-Type': 'application/json' },
-		}).then(() => updateRider());
+		}).then(() => console.log("Transaction Added"));
 	};
 
 	const secondphase = dt => {
@@ -61,6 +59,8 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 
 	const pay = async () => {
 		addTransaction();
+		updateBattery();
+		updateRider();
 	};
 	const confirm = (cb) => {
 		const confirmBox = window.confirm('Do you want to continue');
