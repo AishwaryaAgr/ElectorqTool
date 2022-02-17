@@ -28,6 +28,8 @@ const RegDriver = ({ API_URL , password}) => {
 	const [rent, setRent] = useState(0)
 	const [refund, setRefund] = useState(0);
 	const [reason, setReason] = useState("");
+	const [vrp, setVrp] = useState(0);
+	const [vrpList, setVrpList] = useState([]);
 
 	useEffect(() => {
 		fetch(`${API_URL}/items`)
@@ -39,6 +41,13 @@ const RegDriver = ({ API_URL , password}) => {
 				setAllRiders(items)
 			});
 		console.log("object")
+
+		if(password === "1"){
+			setVrpList(["VRP Sanjeev"]);
+		}
+		else{
+			setVrpList(["VRP Sanjeev", "VRP Chirag"]);
+		}
 
 		fetch(`${API_URL}/vehicles`)
 			.then((item) => item.json())
@@ -173,6 +182,10 @@ const RegDriver = ({ API_URL , password}) => {
 
 	const addRider = async (scooterId) => {
 		let stayAmount = (Number(entryBaazPercent)*Number(entryvehSecurity))/100;
+		let VP = 0;
+		if(Number(vrp) === 0){
+			VP=1
+		}
 		fetch(`${API_URL}/riders/add`, {
 			method: 'PUT',
 			body: JSON.stringify({
@@ -180,7 +193,8 @@ const RegDriver = ({ API_URL , password}) => {
 				number: entryRider.number,
 				batteryId: entrybatId,
 				batterySecurity: Number(entrybatSecurity)+ Number(stayAmount),
-				scooterSecurity: Number(entryvehSecurity) - Number(stayAmount)
+				scooterSecurity: Number(entryvehSecurity) - Number(stayAmount),
+				vrp: VP
 			}),
 			headers: { 'Content-Type': 'application/json' },
 		}).then(() => console.log('Rider Assigned'));
@@ -412,6 +426,17 @@ const RegDriver = ({ API_URL , password}) => {
 										<option defaultValue value='SaketCourt'>
 											Saket Court
 										</option>
+									</select>
+								</div>
+								<div className='col-12'>
+									<select className='form-select' onChange={e=> setVrp(e.target.value)}>
+									{vrpList.map((partner, index) => {
+												return (
+													<option value={index} key={index}>
+														{partner}
+													</option>
+												);
+										})}
 									</select>
 								</div>
 								<button type='button' className='btn btn-primary' onClick={() => confirm(register)} disabled= {entryFlag}>
