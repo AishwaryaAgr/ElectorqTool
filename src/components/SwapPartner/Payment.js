@@ -26,7 +26,11 @@ const Payment = ({ API_URL, rider, current, setRider, setCurrent, absent, setTas
 	const addTransaction = () => {
 		let transactionId = method;
 		if (method === 'online') {
-			transactionId = Id;
+			if(Id === "") transactionId = method;
+			else transactionId = Id;
+
+			setId("");
+			setMethod("Cash");
 		}
 		let cost = Number(current.batteryCharge) - Number(current.soc);
 		const swap = {
