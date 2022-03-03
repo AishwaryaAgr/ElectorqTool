@@ -62,7 +62,6 @@ const TakeRent = ({ API_URL, setTask , password}) => {
 			setDays('');
 			setFirst('');
 			setId('');
-			setMethod('Cash');
 		});
 	};
 
