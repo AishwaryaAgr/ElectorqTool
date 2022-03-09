@@ -22,6 +22,7 @@ const TakeRent = ({ API_URL, setTask , password}) => {
 	// INITIALIZATION
 	useEffect(() => {
 		// Fetch all vehicles from the database
+
 		fetch(`${url}/vehicles`)
 			.then((item) => item.json())
 			.then((items) => {
@@ -31,8 +32,16 @@ const TakeRent = ({ API_URL, setTask , password}) => {
 				if(password === '0')
 					return setAllVehicles(items);
 				console.log(items)
-				const VpVehicles = items.filter(item => item.VP === Number(password))
-				setAllVehicles(VpVehicles)
+				fetch(`${url}/riders`)
+					.then(scooteritems=> scooteritems.json())
+					.then(scooteritems => {
+						let scooterList = [];
+						scooteritems.map(scooteritem => {if(Number(scooteritem.VRP) === Number(1) && scooteritem.scooterId !== "Not Assigned"){
+							return scooterList.push(scooteritem.scooterId)
+						}})
+						const VpVehicles = items.filter(item => scooterList.includes(item.scooterId));
+						setAllVehicles(VpVehicles)
+					})
 			});
 	}, [url, password]);
 
