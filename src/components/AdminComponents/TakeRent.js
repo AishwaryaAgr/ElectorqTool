@@ -245,7 +245,16 @@ const TakeRent = ({ API_URL, setTask , password}) => {
 									/>{' '}
 								</div>
 								<div className='border-left pl-2'>
-									<span className='head'>Take Cash</span>
+									<span className='head'>Take Cash </span>
+									{(() => {
+										if (first !== "") {
+											return (
+												<span style={{fontSize: ".75rem"}}>
+													[ Rent for {amount/44} days ]
+												</span>
+											);
+										}
+									})()}
 									<div>
 										<span className='dollar'>Amount </span>
 										<span className='amount'><span className='dollar'>₹</span>{amount}</span>
