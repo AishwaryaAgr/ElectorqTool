@@ -111,7 +111,7 @@ const Give = ({
 		const charge = document.querySelector("#charge").value;
 		if (!checkSoc(charge) || charge === "")
 			return alert("Charge Must be between 0 and 50");
-		let defaulter = [ 8920743800, 8862959224, 9654484894, 8929297194, 8340614367, 7067903802, 9810214064, 9971231693, 9811582356, 9650869715, 7042824589, 8595704384, 7542856286, 7838227445, 7290801642, 9718769098, 7292082473, 9716841327 ]
+		let defaulter = [ 8920743800, 8862959224, 8340614367, 9811582356, 9650869715, 7042824589, 7542856286, 7838227445, 7290801642, 9718769098, 7292082473, 9716841327 ]
 		const station = document.querySelector("#station").value;
 		// console.log(rider.number);
 		for(let i=0;i<defaulter.length;i++){
