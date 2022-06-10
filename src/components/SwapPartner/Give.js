@@ -111,7 +111,41 @@ const Give = ({
 		const charge = document.querySelector("#charge").value;
 		if (!checkSoc(charge) || charge === "")
 			return alert("Charge Must be between 0 and 50");
-		let defaulter = [];
+		let defaulter = [
+			8826085083,
+			7635043611,
+			7982035136,
+			9821642320,
+			8076345813,
+			8434320940,
+			7300973985,
+			9718862612,
+			9315228346,
+			6202157738,
+			8929297194,
+			9958317437,
+			9889691589,
+			9599104057,
+			8368255474,
+			7222002402,
+			9509610407,
+			7018992313,
+			9654448825,
+			8862959224,
+			8969611448,
+			8076459175,
+			9012130293,
+			9560465535,
+			9910934356,
+			7067903802,
+			7838227445,
+			8595704384,
+			9811766238,
+			9643069018,
+			9971040622,
+			8920593879,
+			8383818994,
+			9650869715];
 		const station = document.querySelector("#station").value;
 		// console.log(rider.number);
 		for(let i=0;i<defaulter.length;i++){
