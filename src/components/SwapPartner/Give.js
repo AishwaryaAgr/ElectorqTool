@@ -112,12 +112,8 @@ const Give = ({
 		if (!checkSoc(charge) || charge === "")
 			return alert("Charge Must be between 0 and 50");
 		let defaulter = [
-			9821642320,
-			8929297194,
-			9889691589,
 			7222002402,
-			7018992313,
-			8595704384
+			9871694468
 			];
 		const station = document.querySelector("#station").value;
 		// console.log(rider.number);
