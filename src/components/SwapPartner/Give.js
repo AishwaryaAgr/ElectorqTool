@@ -126,8 +126,7 @@ const Give = ({
 			8450890587,
 			9546605779,
 			9102492952,
-			9717691138,
-			9709530216
+			9717691138
 			];
 		const station = document.querySelector("#station").value;
 		// console.log(rider.number);
