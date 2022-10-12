@@ -7,7 +7,7 @@ import Swap from './components/SwapPartner/Swap';
 function App() {
 	const [password, setPassword] = useState('');
 	const [incorrect, setIncorrect] = useState(false);
-	let API_URL = 'http://localhost:5000/api';
+	let API_URL = 'https://electorqtool.herokuapp.com/api';
 	const p1 = 'st12tt';
 	const p2 = 'st12rms';
 	const p3 = 'st421t';
