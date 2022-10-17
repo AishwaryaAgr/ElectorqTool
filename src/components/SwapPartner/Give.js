@@ -112,7 +112,6 @@ const Give = ({
 		if (!checkSoc(charge) || charge === "")
 			return alert("Charge Must be between 0 and 50");
 		let defaulter = [
-			9717309085,
 			6353453247,
 			6261361030,
 			7500662787,
