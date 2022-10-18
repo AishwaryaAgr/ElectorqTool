@@ -113,7 +113,6 @@ const Give = ({
 			return alert("Charge Must be between 0 and 50");
 		let defaulter = [
 			6353453247,
-			7500662787,
 			9643069018,
 			8750178721,
 			7018992313,
